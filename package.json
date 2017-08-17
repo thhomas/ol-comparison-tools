@@ -1,0 +1,42 @@
+{
+  "name": "ol-comparison-tools",
+  "version": "1.0.0",
+  "description": "An Openlayers extension adding a control to handle comparison tools between 2 layers.",
+  "main": "comparisonTools.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "serve": "http-server",
+    "test": "phantomjs --web-security=false --ssl-protocol=any ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/Tesunner.html spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thhomas/ol-comparison-tools.git"
+  },
+  "keywords": [
+    "openlayers",
+    "ol3-ext",
+    "swipe",
+    "clip"
+  ],
+  "author": "Thomas Tilak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thhomas/ol-comparison-tools/issues"
+  },
+  "homepage": "https://github.com/thhomas/ol-comparison-tools#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "jquery": "^3.2.1",
+    "ol": "^4.3.1",
+    "ol3-ext": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "http-server": "^0.10.0",
+    "mocha": "^3.5.0",
+    "mocha-phantomjs-core": "^2.1.2"
+  }
+}

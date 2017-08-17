@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title> Tests </title>
+        <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <script src="../node_modules//babel-polyfill/dist/polyfill.js"></script>
+        <script src="../node_modules/mocha/mocha.js"></script>
+        <script src="../node_modules/chai/chai.js"></script>
+        <script>
+            mocha.ui('bdd');
+            mocha.reporter('html');
+            var expect = chai.expect;
+        </script>
+        <script src="../node_modules/jquery/dist/jquery.js"></script>
+        <script src="../node_modules/openlayers/dist/ol-debug.js"></script>
+        <script src="../node_modules/ol3-ext/dist/ol3-ext.js"></script>
+        <script src="../src/ol/control/comparisonTools.js"></script>
+        <script src="spec/comparisonTools.test.js"></script>
+        <script src="spec/hSlider.test.js"></script>
+        <script src="spec/vSlider.test.js"></script>
+        <script src="spec/scope.test.js"></script>
+        <script src="spec/clipLayer.test.js"></script>
+        <script src="spec/doubleMap.test.js"></script>
+        <script>
+            if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
+            else { mocha.run(); }
+        </script>
+    </body>
+</html>
