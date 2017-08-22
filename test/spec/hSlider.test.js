@@ -78,7 +78,7 @@ describe('hSlider control behaviour', function() {
 
     hSwipeControl.set('position', 0.5);
 
-    var event = new Event('mousedown');
+    event = new Event('mousedown');
     event.pageY = -1000;
     document.getElementsByClassName('ol-swipe horizontal')[0].dispatchEvent(event);
 

@@ -9,7 +9,9 @@
   },
   "scripts": {
     "serve": "http-server",
-    "test": "phantomjs --web-security=false --ssl-protocol=any ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/Tesunner.html spec"
+    "test": "phantomjs --web-security=false --ssl-protocol=any ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js test/TestRunner.html spec",
+    "lint": "eslint ./src/**/*.js --ext .js src test --cache",
+    "build": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,12 @@
   },
   "devDependencies": {
     "chai": "^4.1.1",
+    "del": "^3.0.0",
+    "gulp-concat-util": "^0.5.5",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace-task": "^0.11.0",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-uglify": "^3.0.0",
     "http-server": "^0.10.0",
     "mocha": "^3.5.0",
     "mocha-phantomjs-core": "^2.1.2"

@@ -78,7 +78,7 @@ describe('vSlider control behaviour', function() {
 
     vSwipeControl.set('position', 0.5);
 
-    var event = new Event('mousedown');
+    event = new Event('mousedown');
     event.pageX = -1000;
     document.getElementsByClassName('ol-swipe vertical')[0].dispatchEvent(event);
 

@@ -25,10 +25,9 @@
     leftLayer: layer1,
     rightLayer: layer2
   });
-  control.setDisplayMode('doubleMap');
 
   olMap.addControl(control);
-
+  control.setDisplayMode('doubleMap');
 
 
 })(window, document);

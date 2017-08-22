@@ -67,7 +67,7 @@ describe('doubleMap control behaviour', function() {
     expect(map.getLayers().getArray()).to.have.lengthOf(2);
     expect(map.getLayers().item(0).getProperties().visible).to.be.equal(true);
     expect(map.getLayers().item(1).getProperties().visible).to.be.equal(false);
-    expect(comparisonTools.getControl('doubleMapToggle').get('clonedMapLayersGroup').getLayers().getArray()).to.have.lengthOf(1);
+    expect(mapCloned.getLayers().getArray()).to.have.lengthOf(1);
     expect(mapCloned.getLayers().item(0).getProperties().visible).to.be.equal(true);
 
     done();

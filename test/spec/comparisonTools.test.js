@@ -2,7 +2,7 @@
 
 describe('ol.control.ComparisonTools', function() {
 
-  var target, mapDiv, map, comparisonTools;
+  var mapDiv, map, comparisonTools;
 
   describe('constructor', function() {
 
