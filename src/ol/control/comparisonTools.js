@@ -23,7 +23,6 @@ ol.control.ComparisonTools = function(options)  {
   this.clonedLayer_;
   this.rightLayer_;
   this.leftLayer_;
-  this.displayMode_ = 'normal';
 
   this.vSwipeControl_;
   this.hSwipeControl_;
@@ -164,7 +163,6 @@ ol.control.ComparisonTools.prototype.getControl = function(name) {
  */
 ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) {
   if(event.active) {
-    this.displayMode_ = 'vSlider';
     this.vSwipeControl_ = new ol.control.Swipe({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
@@ -173,7 +171,6 @@ ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) 
     this.vSwipeControl_.set('name', 'vSlider');
     this.getMap().addControl(this.vSwipeControl_);
   } else {
-    this.displayMode_ = 'normal';
     if(this.vSwipeControl_) {
       this.getMap().removeControl(this.vSwipeControl_);
       this.vSwipeControl_ = undefined;
@@ -186,7 +183,6 @@ ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) 
  */
 ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event) {
   if(event.active) {
-    this.displayMode_ = 'hSlider';
     this.hSwipeControl_ = new ol.control.Swipe({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
@@ -195,7 +191,6 @@ ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event
     this.hSwipeControl_.set('name', 'hSlider');
     this.getMap().addControl(this.hSwipeControl_);
   } else {
-    this.displayMode_ = 'normal';
     if(this.hSwipeControl_) {
       this.getMap().removeControl(this.hSwipeControl_);
       this.hSwipeControl_ = undefined;
@@ -209,7 +204,6 @@ ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event
 ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
   var scopeToggleControl = this.getControl('scopeToggle');
   if(event.active) {
-    this.displayMode_ = 'scope';
     scopeToggleControl.setInteraction(new ol.interaction.Clip({
       radius: 200
     }));
@@ -217,7 +211,6 @@ ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
     this.getMap().addInteraction(scopeToggleControl.getInteraction());
     scopeToggleControl.getInteraction().addLayer(this.getRightLayer());
   } else {
-    this.displayMode_ = 'normal';
     if(scopeToggleControl.getInteraction()) {
       scopeToggleControl.getInteraction().removeLayer(this.getRightLayer());
       // remove clip interaction from map
@@ -233,12 +226,10 @@ ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
 ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event) {
   var clipLayerToggleControl = this.getControl('clipLayerToggle');
   if(event.active) {
-    this.displayMode_ = 'clipLayer';
     this.getRightLayer().setVisible(false);
     // set icon class to fa-eye-slash
     clipLayerToggleControl.element.getElementsByClassName('fa')[0].className = 'fa fa-eye-slash';
   } else {
-    this.displayMode_ = 'normal';
     if(this.getDisplayMode() !== 'doubleMap') {
       this.getRightLayer().setVisible(true);
     }
@@ -255,7 +246,6 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
   var mapDiv = this.getMap().getViewport().parentElement;
   var mapDiv2 = this.getClonedMap().getViewport().parentElement;
   if(event.active) {
-    this.displayMode_ = 'doubleMap';
 
     mapDiv2.style.float =  'left';
     mapDiv2.style.width =  '50%';
@@ -274,7 +264,6 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
     this.getMap().updateSize();
     this.getClonedMap().updateSize();
   } else {
-    this.displayMode_ = 'normal';
 
     mapDiv2.style.display = 'none';
     mapDiv2.style.width = '100%';
@@ -291,18 +280,18 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
 }
 
 /**
- * Set displayMode_
+ * Set displayMode
  * @param {string} display mode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
 ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
   if(this.getMap()) {
 
-    this.getControl('vSliderToggle').setActive(false);
+    /*this.getControl('vSliderToggle').setActive(false);
     this.getControl('hSliderToggle').setActive(false);
     this.getControl('scopeToggle').setActive(false);
     this.getControl('clipLayerToggle').setActive(false);
-    this.getControl('doubleMapToggle').setActive(false);
+    this.getControl('doubleMapToggle').setActive(false);*/
 
     if(displayMode === 'vSlider') {
       this.getControl('vSliderToggle').setActive(true);
@@ -322,11 +311,17 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 };
 
 /**
- * Get displayMode_ value
- * @return {string} displayMode_
+ * Get active control
+ * @return {string} displayMode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
  ol.control.ComparisonTools.prototype.getDisplayMode = function() {
-  return this.displayMode_;
+  var i;
+  for(i=0; i<this.getControls().length; i++) {
+    if(this.getControls()[i].getActive()) {
+      return this.getControls()[i].get('name').substring(0, this.getControls()[i].get('name').length - 6);
+    }
+  }
+  return "normal";
  };
 
 /**
