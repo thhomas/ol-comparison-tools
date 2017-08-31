@@ -56,7 +56,7 @@ describe('doubleMap control behaviour', function() {
 
   });
 
-  it('adds right layer in a groupcloned map and hides it in original map.', function(done) {
+  it('adds right layer in cloned map and hides it in original map.', function(done) {
 
     expect(map.getLayers().getArray()).to.have.lengthOf(2);
     expect(map.getLayers().item(0).getProperties().visible).to.be.equal(true);
@@ -71,6 +71,17 @@ describe('doubleMap control behaviour', function() {
     expect(mapCloned.getLayers().item(0).getProperties().visible).to.be.equal(true);
 
     done();
+
+  });
+
+  it('applies changed made on rightLayer to clonedLayer.', function() {
+
+    var stamenSource = new ol.source.Stamen({
+      layer: 'watercolor'
+    });
+    comparisonTools.getRightLayer().setSource(stamenSource);
+
+    expect(mapCloned.getLayers().item(0).getSource()).to.be.equal(stamenSource);
 
   });
 

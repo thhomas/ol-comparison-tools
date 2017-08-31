@@ -29,5 +29,4 @@
   olMap.addControl(control);
   control.setDisplayMode('doubleMap');
 
-
 })(window, document);

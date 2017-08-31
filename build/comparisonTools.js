@@ -255,10 +255,15 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
     mapDiv2.style.display = 'block';
     mapDiv2.style.height = mapDiv.clientHeight + 'px';
 
-    // in cloned map, move right layer from map to cloned map
+    // as we do not want control to add/remove layers on map, we add a cloned layer to cloned map
+    // and we hide rightLayer from map
     this.clonedLayer_ = new ol.layer.Tile(this.getRightLayer().getProperties());
     this.clonedLayer_.setVisible(true);
     this.getRightLayer().setVisible(false);
+
+    // change made on rightLayer are applied to clonedLayer_
+    this.getRightLayer().on('change', this.updateClonedLayer_, this);
+
     this.getClonedMap().addLayer(this.clonedLayer_);
 
     this.getMap().updateSize();
@@ -275,6 +280,10 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
       this.getRightLayer().setVisible(true);
     }
 
+
+    // change made on rightLayer are applied to clonedLayer_
+    this.getRightLayer().un('change', this.updateClonedLayer_, this);
+
     this.getMap().updateSize();
   }
 }
@@ -286,12 +295,6 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
 ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
   if(this.getMap()) {
-
-    /*this.getControl('vSliderToggle').setActive(false);
-    this.getControl('hSliderToggle').setActive(false);
-    this.getControl('scopeToggle').setActive(false);
-    this.getControl('clipLayerToggle').setActive(false);
-    this.getControl('doubleMapToggle').setActive(false);*/
 
     if(displayMode === 'vSlider') {
       this.getControl('vSliderToggle').setActive(true);
@@ -330,6 +333,12 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
  */
  ol.control.ComparisonTools.prototype.setRightLayer = function(layer) {
 
+   if(!this.getMap()) {
+     throw new EvalError('control must be added to map before setting rightLayer.');
+   }
+
+  this.rightLayer_ = layer;
+
   if(this.getDisplayMode() === 'vSlider') {
     var vSwipeControl;
     this.getMap().getControls().forEach(function(control) {
@@ -337,7 +346,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
         vSwipeControl = control;
       }
     });
-    vSwipeControl.removeLayer(this.rightLayer_);
+    vSwipeControl.removeLayer(this.getRightLayer());
     vSwipeControl.addLayer(layer, true);
   } else if(this.getDisplayMode() === 'hSlider') {
     var hSwipeControl;
@@ -346,30 +355,40 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
         hSwipeControl = control;
       }
     });
-    hSwipeControl.removeLayer(this.rightLayer_);
+    hSwipeControl.removeLayer(this.getRightLayer());
     hSwipeControl.addLayer(layer, true);
   } else if(this.getDisplayMode() === 'clipLayer') {
-    layer.setVisible(this.rightLayer_.getVisible());
+    layer.setVisible(this.getRightLayer().getVisible());
   } else if(this.getDisplayMode() === 'scope') {
     var interaction = this.getControl('scopeToggle').getInteraction();
-    interaction.removeLayer(this.rightLayer_);
+    interaction.removeLayer(this.getRightLayer());
     interaction.addLayer(layer);
   } else if(this.getDisplayMode() === 'doubleMap') {
-    this.getClonedMap().removeLayer(this.clonedLayer_);
-    this.clonedLayer_ = new ol.layer.Tile(layer.getProperties());
-    this.getClonedMap().addLayer(this.clonedLayer_);
+    this.clonedLayer_.setProperties(layer.getProperties());
 
-    layer.setVisible(false);
+    // change made on rightLayer are applied to clonedLayer_
+    this.getRightLayer().on('change', this.updateClonedLayer_, this);
+
+    this.getRightLayer().setVisible(false);
   }
-  this.rightLayer_ = layer;
 
 };
+
+ol.control.ComparisonTools.prototype.updateClonedLayer_ = function(event) {
+  this.clonedLayer_.setProperties(this.getRightLayer().getProperties());
+  this.clonedLayer_.setVisible(true);
+}
 
 /**
  * Set left layer for comparison
  * @param {ol.layer} layer
  */
 ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
+
+  if(!this.getMap()) {
+    throw new EvalError('control must be added to map before setting leftLayer.');
+  }
+
   this.leftLayer_ = layer;
   var vSwipeControl;
   this.getMap().getControls().forEach(function(control) {
@@ -378,7 +397,7 @@ ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
     }
   });
   if(vSwipeControl) {
-    vSwipeControl.addLayer(this.leftLayer_);
+    vSwipeControl.addLayer(this.getLeftLayer());
   }
   var hSwipeControl;
   this.getMap().getControls().forEach(function(control) {
@@ -387,7 +406,7 @@ ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
     }
   });
   if(hSwipeControl) {
-    hSwipeControl.addLayer(this.leftLayer_);
+    hSwipeControl.addLayer(this.getLeftLayer());
   }
  };
 
