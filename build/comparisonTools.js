@@ -50,7 +50,7 @@ ol.control.ComparisonTools = function(options)  {
   }
 
 
-  this.useCloneLayer_ = options.useCloneLayer === true ? options.useCloneLayer : false;
+  this.useCloneLayer_ = options.useCloneLayer === true ? options.useCloneLayer :false;
 
 
   for(var i=0; i<controlNames.length; i++) {
@@ -183,11 +183,9 @@ ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) 
     });
     this.vSwipeControl_.set('name', 'vSlider');
     this.getMap().addControl(this.vSwipeControl_);
-  } else {
-    if(this.vSwipeControl_) {
-      this.getMap().removeControl(this.vSwipeControl_);
-      this.vSwipeControl_ = undefined;
-    }
+  } else if(this.vSwipeControl_) {
+    this.getMap().removeControl(this.vSwipeControl_);
+    this.vSwipeControl_ = undefined;
   }
 }
 
@@ -203,11 +201,9 @@ ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event
     });
     this.hSwipeControl_.set('name', 'hSlider');
     this.getMap().addControl(this.hSwipeControl_);
-  } else {
-    if(this.hSwipeControl_) {
-      this.getMap().removeControl(this.hSwipeControl_);
-      this.hSwipeControl_ = undefined;
-    }
+  } else if(this.hSwipeControl_) {
+    this.getMap().removeControl(this.hSwipeControl_);
+    this.hSwipeControl_ = undefined;
   }
 }
 
@@ -223,13 +219,11 @@ ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
     // add clip interaction to map
     this.getMap().addInteraction(scopeToggleControl.getInteraction());
     scopeToggleControl.getInteraction().addLayer(this.getRightLayer());
-  } else {
-    if(scopeToggleControl.getInteraction()) {
-      scopeToggleControl.getInteraction().removeLayer(this.getRightLayer());
-      // remove clip interaction from map
-      this.getMap().removeInteraction(scopeToggleControl.getInteraction());
-      scopeToggleControl.setInteraction();
-    }
+  } else if(scopeToggleControl.getInteraction()) {
+    scopeToggleControl.getInteraction().removeLayer(this.getRightLayer());
+    // remove clip interaction from map
+    this.getMap().removeInteraction(scopeToggleControl.getInteraction());
+    scopeToggleControl.setInteraction();
   }
 }
 
@@ -354,7 +348,8 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
       return this.getControls()[i].get('name').substring(0, this.getControls()[i].get('name').length - 6);
     }
   }
-  return "normal";
+
+  return 'normal';
  };
 
 /**
