@@ -23,6 +23,8 @@ ol.control.ComparisonTools = function(options)  {
   this.clonedLayer_;
   this.rightLayer_;
   this.leftLayer_;
+  this.useCloneLayer_ = false;
+  this.layerGroup_;
 
   this.vSwipeControl_;
   this.hSwipeControl_;
@@ -42,6 +44,13 @@ ol.control.ComparisonTools = function(options)  {
   if(options.leftLayer) {
     this.leftLayer_ = options.leftLayer;
   }
+
+  if(options.layerGroup) {
+    this.layerGroup_ = options.layerGroup;
+  }
+
+
+  this.useCloneLayer_ = options.useCloneLayer === true ? options.useCloneLayer : false;
 
 
   for(var i=0; i<controlNames.length; i++) {
@@ -108,6 +117,10 @@ ol.inherits(ol.control.ComparisonTools, ol.control.Bar);
 
 ol.control.ComparisonTools.prototype.setMap = function(map) {
   ol.control.Bar.prototype.setMap.call(this, map);
+
+  if(!this.layerGroup_) {
+    this.layerGroup_ = this.getMap().getLayerGroup();
+  }
 
   var doubleMapControl = this.getControl('doubleMapToggle');
   if(doubleMapControl) {
@@ -230,7 +243,11 @@ ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event)
     // set icon class to fa-eye-slash
     clipLayerToggleControl.element.getElementsByClassName('fa')[0].className = 'fa fa-eye-slash';
   } else {
-    if(this.getDisplayMode() !== 'doubleMap') {
+    if(this.useCloneLayer_) {
+      if(this.getDisplayMode() !== 'doubleMap') {
+        this.getRightLayer().setVisible(true);
+      }
+    } else {
       this.getRightLayer().setVisible(true);
     }
     // set icon class to fa-eye
@@ -257,14 +274,21 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
 
     // as we do not want control to add/remove layers on map, we add a cloned layer to cloned map
     // and we hide rightLayer from map
-    this.clonedLayer_ = new ol.layer.Tile(this.getRightLayer().getProperties());
-    this.clonedLayer_.setVisible(true);
-    this.getRightLayer().setVisible(false);
+    if(this.useCloneLayer_) {
+      this.clonedLayer_ = new ol.layer.Tile(this.getRightLayer().getProperties());
+      this.clonedLayer_.setVisible(true);
+      this.getRightLayer().setVisible(false);
 
-    // change made on rightLayer are applied to clonedLayer_
-    this.getRightLayer().on('change', this.updateClonedLayer_, this);
 
-    this.getClonedMap().addLayer(this.clonedLayer_);
+      // change made on rightLayer are applied to clonedLayer_
+      this.getRightLayer().on('change', this.updateClonedLayer_, this);
+
+      this.getClonedMap().addLayer(this.clonedLayer_);
+    } else {
+      this.getRightLayer().setVisible(true);
+      this.layerGroup_.getLayers().remove(this.getRightLayer());
+      this.getClonedMap().addLayer(this.getRightLayer());
+    }
 
     this.getMap().updateSize();
     this.getClonedMap().updateSize();
@@ -274,18 +298,24 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
     mapDiv2.style.width = '100%';
     mapDiv.style.width = '100%';
 
-    // in cloned map, move right layer from cloned map to map
-    this.getClonedMap().removeLayer(this.clonedLayer_);
-    if(this.getDisplayMode() !== 'clipLayer') {
-      this.getRightLayer().setVisible(true);
+    if(this.useCloneLayer_) {
+      // in cloned map, move right layer from cloned map to map
+      this.getClonedMap().removeLayer(this.clonedLayer_);
+      if(this.getDisplayMode() !== 'clipLayer') {
+        this.getRightLayer().setVisible(true);
+      }
+      // change made on rightLayer are applied to clonedLayer_
+      this.getRightLayer().un('change', this.updateClonedLayer_, this);
+    } else {
+      if(this.getDisplayMode() !== 'clipLayer') {
+        this.getRightLayer().setVisible(true);
+      }
+      this.getClonedMap().removeLayer(this.getRightLayer());
+      this.layerGroup_.getLayers().push(this.getRightLayer());
     }
-
-
-    // change made on rightLayer are applied to clonedLayer_
-    this.getRightLayer().un('change', this.updateClonedLayer_, this);
-
-    this.getMap().updateSize();
   }
+
+  this.getMap().updateSize();
 }
 
 /**
@@ -337,7 +367,6 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
      throw new EvalError('control must be added to map before setting rightLayer.');
    }
 
-  this.rightLayer_ = layer;
 
   if(this.getDisplayMode() === 'vSlider') {
     var vSwipeControl;
@@ -364,13 +393,23 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
     interaction.removeLayer(this.getRightLayer());
     interaction.addLayer(layer);
   } else if(this.getDisplayMode() === 'doubleMap') {
-    this.clonedLayer_.setProperties(layer.getProperties());
 
-    // change made on rightLayer are applied to clonedLayer_
-    this.getRightLayer().on('change', this.updateClonedLayer_, this);
+    if(this.useCloneLayer_) {
+      this.clonedLayer_.setProperties(layer.getProperties());
 
-    this.getRightLayer().setVisible(false);
+      // change made on rightLayer are applied to clonedLayer_
+      this.getRightLayer().on('change', this.updateClonedLayer_, this);
+
+      this.getRightLayer().setVisible(false);
+    } else {
+      this.getRightLayer().setVisible(true);
+      this.layerGroup_.getLayers().remove(layer);
+      this.getClonedMap().removeLayer(this.getRightLayer());
+      this.getClonedMap().addLayer(layer);
+    }
   }
+
+  this.rightLayer_ = layer;
 
 };
 
@@ -432,4 +471,20 @@ ol.control.ComparisonTools.prototype.getLeftLayer = function() {
  */
 ol.control.ComparisonTools.prototype.getClonedMap = function() {
   return this.clonedMap_;
+}
+
+/**
+ * Set layer group
+ * @param {ol.layer.Group} layer group where layers are added/removed
+ */
+ol.control.ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
+  this.layerGroup_ = layerGroup;
+}
+
+/**
+ * Get layer group
+ * @return {ol.layer.Group} layer group where layers are added/removed
+ */
+ol.control.ComparisonTools.prototype.getLayerGroup = function() {
+  return this.layerGroup_;
 }

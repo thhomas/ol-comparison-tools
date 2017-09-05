@@ -357,8 +357,6 @@ describe('ol.control.ComparisonTools', function() {
 
     });
 
-
-
     after(function() {
       document.body.removeChild(document.getElementById(mapDiv.id+'-cloned'));
       document.body.removeChild(mapDiv);
