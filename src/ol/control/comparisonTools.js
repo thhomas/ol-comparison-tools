@@ -399,8 +399,12 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
     } else {
       this.getRightLayer().setVisible(true);
       this.layerGroup_.getLayers().remove(layer);
-      this.getClonedMap().removeLayer(this.getRightLayer());
-      this.getClonedMap().addLayer(layer);
+      // update layer in collection
+      this.getClonedMap().getLayers().forEach(function(el, index, array) {
+        if(el === this.getRightLayer()) {
+          this.getClonedMap().getLayers().setAt(index, layer);
+        }
+      }, this);
     }
   }
 
