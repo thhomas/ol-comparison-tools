@@ -492,7 +492,7 @@ ol.control.ComparisonTools.prototype.getLayerGroup = function() {
  * Get vertical swipe control group
  * @return {ol.control.Swipe} vertical swipe control
  */
-ol.control.ComparisonTools.prototype.getvSwipeControl = function() {
+ol.control.ComparisonTools.prototype.getVSwipeControl = function() {
   return this.vSwipeControl_;
 }
 
@@ -500,6 +500,6 @@ ol.control.ComparisonTools.prototype.getvSwipeControl = function() {
  * Get horizontal swipe control group
  * @return {ol.control.Swipe} horizontal swipe control
  */
-ol.control.ComparisonTools.prototype.gethSwipeControl = function() {
+ol.control.ComparisonTools.prototype.getHSwipeControl = function() {
   return this.hSwipeControl_;
 }
