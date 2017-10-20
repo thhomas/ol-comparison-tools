@@ -487,3 +487,19 @@ ol.control.ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
 ol.control.ComparisonTools.prototype.getLayerGroup = function() {
   return this.layerGroup_;
 }
+
+/**
+ * Get vertical swipe control group
+ * @return {ol.control.Swipe} vertical swipe control
+ */
+ol.control.ComparisonTools.prototype.getVSwipeControl = function() {
+  return this.vSwipeControl_;
+}
+
+/**
+ * Get horizontal swipe control group
+ * @return {ol.control.Swipe} horizontal swipe control
+ */
+ol.control.ComparisonTools.prototype.getHSwipeControl = function() {
+  return this.hSwipeControl_;
+}
