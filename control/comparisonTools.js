@@ -1,4 +1,20 @@
-/** An Control bar with comparison tools
+/**
+ * @module ol/control/comparisonTools
+ */
+
+import ol from 'ol'
+import BarControl from 'ol-ext/control/barcontrol';
+import ZoomControl from 'ol/control/zoom';
+import Map from 'ol/map';
+import Interaction from 'ol/interaction';
+import SynchronizeInteraction from 'ol-ext/interaction/synchronizeinteraction';
+import SwipeControl from 'ol-ext/control/swipecontrol';
+import ClipInteraction from 'ol-ext/interaction/clipinteraction';
+import TileLayer from 'ol/layer/tile';
+
+/**
+ * @classdesc
+ * An Control bar with comparison tools
  * The display bar is a container for other controls. It is an extension of Control Bar
  *
  * @constructor
@@ -13,7 +29,7 @@
  *    displayMode {string}
  *    controlNames {Array.<string>} a list of control name to add to the comparison toolset (can be 'hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap')
  */
-ol.control.ComparisonTools = function(options)  {
+var ComparisonToolsControl = function(options)  {
   if(!options) {
     options = {};
   }
@@ -29,7 +45,7 @@ ol.control.ComparisonTools = function(options)  {
   this.vSwipeControl_;
   this.hSwipeControl_;
 
-  ol.control.Bar.call(this, {
+  BarControl.call(this, {
     group: true,
     toggleOne: true,
     className: options.className,
@@ -113,10 +129,10 @@ ol.control.ComparisonTools = function(options)  {
 
 
 };
-ol.inherits(ol.control.ComparisonTools, ol.control.Bar);
+ol.inherits(ComparisonToolsControl, BarControl);
 
-ol.control.ComparisonTools.prototype.setMap = function(map) {
-  ol.control.Bar.prototype.setMap.call(this, map);
+ComparisonToolsControl.prototype.setMap = function(map) {
+  BarControl.prototype.setMap.call(this, map);
 
   if(!this.layerGroup_) {
     this.layerGroup_ = this.getMap().getLayerGroup();
@@ -136,24 +152,24 @@ ol.control.ComparisonTools.prototype.setMap = function(map) {
 
     mapDiv.parent().append(mapDiv2);
 
-    this.clonedMap_ = new ol.Map({
+    this.clonedMap_ = new Map({
       target: mapDiv2[0],
       renderer: map.renderer,
-      interactions: ol.interaction.defaults(),
+      interactions: Interaction.defaults(),
       view: map.getView(),
       controls: [
-        new ol.control.Zoom({
+        new ZoomControl({
           zoomInTipLabel: 'Zoom avant',
           zoomOutTipLabel: 'Zoom arrière'
         }),
-        new ol.control.Rotate(),
-        ol.control.GeoportalAttribution !== undefined ? new ol.control.GeoportalAttribution() : new ol.control.Attribution()
+        new RotateControl(),
+        new AttributionControl()
       ]
     });
 
     // add synchronize interaction between maps
-    map.addInteraction( new ol.interaction.Synchronize({maps: [this.clonedMap_]}));
-    this.clonedMap_.addInteraction( new ol.interaction.Synchronize({maps: [map]}));
+    map.addInteraction( new SynchronizeInteraction({maps: [this.clonedMap_]}));
+    this.clonedMap_.addInteraction( new SynchronizeInteraction({maps: [map]}));
 
   }
 };
@@ -163,7 +179,7 @@ ol.control.ComparisonTools.prototype.setMap = function(map) {
  * @param {string} name name of control
  * @return {ol.control.Control|undefined} control control returned
  */
-ol.control.ComparisonTools.prototype.getControl = function(name) {
+ComparisonToolsControl.prototype.getControl = function(name) {
   for(var i=0; i<this.getControls().length; i++) {
     if(this.getControls()[i].get('name') === name) {
       return this.getControls()[i];
@@ -174,9 +190,9 @@ ol.control.ComparisonTools.prototype.getControl = function(name) {
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) {
+ComparisonToolsControl.prototype.onVerticalControlChange_ = function(event) {
   if(event.active) {
-    this.vSwipeControl_ = new ol.control.Swipe({
+    this.vSwipeControl_ = new SwipeControl({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
       orientation: 'vertical'
@@ -192,9 +208,9 @@ ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) 
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event) {
+ComparisonToolsControl.prototype.onHorizontalControlChange_ = function(event) {
   if(event.active) {
-    this.hSwipeControl_ = new ol.control.Swipe({
+    this.hSwipeControl_ = new SwipeControl({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
       orientation: 'horizontal'
@@ -210,10 +226,10 @@ ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
+ComparisonToolsControl.prototype.onScopeControlChange_ = function(event) {
   var scopeToggleControl = this.getControl('scopeToggle');
   if(event.active) {
-    scopeToggleControl.setInteraction(new ol.interaction.Clip({
+    scopeToggleControl.setInteraction(new ClipInteraction({
       radius: 200
     }));
     // add clip interaction to map
@@ -230,7 +246,7 @@ ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event) {
+ComparisonToolsControl.prototype.onClipLayerControlChange_ = function(event) {
   var clipLayerToggleControl = this.getControl('clipLayerToggle');
   if(event.active) {
     this.getRightLayer().setVisible(false);
@@ -252,7 +268,7 @@ ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event)
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event) {
+ComparisonToolsControl.prototype.onDoubleMapControlChange_ = function(event) {
   var doubleMapToggleControl = this.getControl('doubleMapToggle');
   var mapDiv = this.getMap().getViewport().parentElement;
   var mapDiv2 = this.getClonedMap().getViewport().parentElement;
@@ -269,7 +285,7 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
     // as we do not want control to add/remove layers on map, we add a cloned layer to cloned map
     // and we hide rightLayer from map
     if(this.useCloneLayer_) {
-      this.clonedLayer_ = new ol.layer.Tile(this.getRightLayer().getProperties());
+      this.clonedLayer_ = new TileLayer(this.getRightLayer().getProperties());
       this.clonedLayer_.setVisible(true);
       this.getRightLayer().setVisible(false);
 
@@ -316,7 +332,7 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
  * Set displayMode
  * @param {string} display mode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
-ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
+ComparisonToolsControl.prototype.setDisplayMode = function(displayMode) {
 
   if(this.getMap()) {
 
@@ -341,7 +357,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
  * Get active control
  * @return {string} displayMode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
- ol.control.ComparisonTools.prototype.getDisplayMode = function() {
+ ComparisonToolsControl.prototype.getDisplayMode = function() {
   var i;
   for(i=0; i<this.getControls().length; i++) {
     if(this.getControls()[i].getActive()) {
@@ -356,7 +372,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
  * Set right layer for comparison
  * @param {ol.layer} layer
  */
- ol.control.ComparisonTools.prototype.setRightLayer = function(layer) {
+ ComparisonToolsControl.prototype.setRightLayer = function(layer) {
 
    if(!this.getMap()) {
      throw new EvalError('control must be added to map before setting rightLayer.');
@@ -412,7 +428,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
 };
 
-ol.control.ComparisonTools.prototype.updateClonedLayer_ = function(event) {
+ComparisonToolsControl.prototype.updateClonedLayer_ = function(event) {
   this.clonedLayer_.setProperties(this.getRightLayer().getProperties());
   this.clonedLayer_.setVisible(true);
 }
@@ -421,7 +437,7 @@ ol.control.ComparisonTools.prototype.updateClonedLayer_ = function(event) {
  * Set left layer for comparison
  * @param {ol.layer} layer
  */
-ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
+ComparisonToolsControl.prototype.setLeftLayer = function(layer) {
 
   if(!this.getMap()) {
     throw new EvalError('control must be added to map before setting leftLayer.');
@@ -452,7 +468,7 @@ ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
  * Get right layer
  * @return {ol.layer} layer
  */
-ol.control.ComparisonTools.prototype.getRightLayer = function() {
+ComparisonToolsControl.prototype.getRightLayer = function() {
   return this.rightLayer_;
 };
 
@@ -460,7 +476,7 @@ ol.control.ComparisonTools.prototype.getRightLayer = function() {
  * Get left layer
  * @return {ol.layer} layer
  */
-ol.control.ComparisonTools.prototype.getLeftLayer = function() {
+ComparisonToolsControl.prototype.getLeftLayer = function() {
   return this.leftLayer_;
 };
 
@@ -468,7 +484,7 @@ ol.control.ComparisonTools.prototype.getLeftLayer = function() {
  * Get cloned map
  * @return {ol.map} cloned map
  */
-ol.control.ComparisonTools.prototype.getClonedMap = function() {
+ComparisonToolsControl.prototype.getClonedMap = function() {
   return this.clonedMap_;
 }
 
@@ -476,7 +492,7 @@ ol.control.ComparisonTools.prototype.getClonedMap = function() {
  * Set layer group
  * @param {ol.layer.Group} layer group where layers are added/removed
  */
-ol.control.ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
+ComparisonToolsControl.prototype.setLayerGroup = function(layerGroup) {
   this.layerGroup_ = layerGroup;
 }
 
@@ -484,7 +500,7 @@ ol.control.ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
  * Get layer group
  * @return {ol.layer.Group} layer group where layers are added/removed
  */
-ol.control.ComparisonTools.prototype.getLayerGroup = function() {
+ComparisonToolsControl.prototype.getLayerGroup = function() {
   return this.layerGroup_;
 }
 
@@ -492,7 +508,7 @@ ol.control.ComparisonTools.prototype.getLayerGroup = function() {
  * Get vertical swipe control group
  * @return {ol.control.Swipe} vertical swipe control
  */
-ol.control.ComparisonTools.prototype.getVSwipeControl = function() {
+ComparisonToolsControl.prototype.getVSwipeControl = function() {
   return this.vSwipeControl_;
 }
 
@@ -500,6 +516,8 @@ ol.control.ComparisonTools.prototype.getVSwipeControl = function() {
  * Get horizontal swipe control group
  * @return {ol.control.Swipe} horizontal swipe control
  */
-ol.control.ComparisonTools.prototype.getHSwipeControl = function() {
+ComparisonToolsControl.prototype.getHSwipeControl = function() {
   return this.hSwipeControl_;
 }
+
+export default ComparisonToolsControl;

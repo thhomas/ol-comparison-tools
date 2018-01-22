@@ -32,8 +32,8 @@
   "dependencies": {
     "babel-polyfill": "^6.23.0",
     "jquery": "^3.2.1",
-    "ol": "^4.3.1",
-    "ol3-ext": "^1.0.1"
+    "ol": "^4.6.4",
+    "ol-ext": "git+https://github.com/darkscript/ol-ext.git"
   },
   "devDependencies": {
     "chai": "^4.1.1",
