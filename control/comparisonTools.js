@@ -3,11 +3,12 @@
  */
 
 import ol from 'ol'
-import BarControl from 'ol-ext/control/barcontrol';
+import BarControl from 'ol-ext/control/controlbar';
 import ZoomControl from 'ol/control/zoom';
 import Map from 'ol/map';
 import Interaction from 'ol/interaction';
 import SynchronizeInteraction from 'ol-ext/interaction/synchronizeinteraction';
+import ToggleControl from 'ol-ext/control/togglecontrol';
 import SwipeControl from 'ol-ext/control/swipecontrol';
 import ClipInteraction from 'ol-ext/interaction/clipinteraction';
 import TileLayer from 'ol/layer/tile';
@@ -72,7 +73,7 @@ var ComparisonToolsControl = function(options)  {
   for(var i=0; i<controlNames.length; i++) {
     var controlName = controlNames[i];
     if(controlName === 'vSlider') {
-      var verticalControl = new ol.control.Toggle({
+      var verticalControl = new ToggleControl({
         html: '<i class="fa fa-arrows-v"></i>',
         className: 'vertical-button',
         title: 'Comparaison verticale',
@@ -82,7 +83,7 @@ var ComparisonToolsControl = function(options)  {
       verticalControl.on('change:active', this.onVerticalControlChange_, this);
       this.addControl(verticalControl);
     } else if(controlName === 'hSlider') {
-      var horizontalControl = new ol.control.Toggle({
+      var horizontalControl = new ToggleControl({
         html: '<i class="fa fa-arrows-h"></i>',
         className: 'horizontal-button',
         title: 'Comparaison horizontale',
@@ -92,7 +93,7 @@ var ComparisonToolsControl = function(options)  {
       horizontalControl.on('change:active', this.onHorizontalControlChange_, this);
       this.addControl(horizontalControl);
     } else if(controlName === 'scope') {
-      var scopeControl = new ol.control.Toggle({
+      var scopeControl = new ToggleControl({
         html: '<i class="fa fa-circle-o"></i>',
         className: 'scope-button',
         name: 'scope',
@@ -103,7 +104,7 @@ var ComparisonToolsControl = function(options)  {
       scopeControl.on('change:active', this.onScopeControlChange_, this);
       this.addControl(scopeControl);
     } else if(controlName === 'clipLayer') {
-      var clipLayerControl = new ol.control.Toggle({
+      var clipLayerControl = new ToggleControl({
         html: '<i class="fa fa-eye"></i>',
         className: 'clipLayer-button',
         title: 'Masquer',
@@ -114,7 +115,7 @@ var ComparisonToolsControl = function(options)  {
       this.addControl(clipLayerControl);
     } else if(controlName === 'doubleMap') {
 
-      var doubleMapControl = new ol.control.Toggle({
+      var doubleMapControl = new ToggleControl({
         html: '<i class="fa fa-pause"></i>',
         className: 'doubleMap-button',
         name: 'doubleMap',
