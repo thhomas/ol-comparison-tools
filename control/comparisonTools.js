@@ -10,6 +10,8 @@ import Interaction from 'ol/interaction';
 import SynchronizeInteraction from 'ol-ext/interaction/synchronizeinteraction';
 import ToggleControl from 'ol-ext/control/togglecontrol';
 import SwipeControl from 'ol-ext/control/swipecontrol';
+import RotateControl from 'ol/control/rotate';
+import AttributionControl from 'ol/control/attribution';
 import ClipInteraction from 'ol-ext/interaction/clipinteraction';
 import TileLayer from 'ol/layer/tile';
 
