@@ -7,4 +7,10 @@ Run tests
 
 Building from javascript modules version
 --------
-`npm run build`
+`gulp dist`
+
+Serving examples
+--------
+`npm run serve`
+
+then go to http://localhost:8080/examples/example.html

@@ -11,7 +11,8 @@
     "serve": "http-server",
     "test": "karma start karma.conf.js",
     "lint": "eslint ./**/*.js --ext .js control test --cache --verbose",
-    "build": "gulp build"
+    "prepack": "gulp prepublish",
+    "postpack": "gulp postpublish"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
     "gulp": "^3.9.1",
     "jquery": "^3.3.1",
     "ol": "^4.6.4",
-    "ol-ext": "git+https://github.com/Viglino/ol-ext#npm-restructured"
+    "ol-ext": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

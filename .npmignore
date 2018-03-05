@@ -1,0 +1,6 @@
+# ignore examples
+examples
+# ignore the dist
+dist/*.js
+# ignore the src (copy in the root)
+src

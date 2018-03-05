@@ -44,6 +44,26 @@ function transform() {
   });
 };
 
+/**
+ * Move the files into root
+ * for packaging
+ */
+gulp.task ("prepublish", function(){
+  gulp.src(["./src/*/*.*"], { base: './src' })
+    .pipe(gulp.dest('./'));
+});
+
+/**
+ * Remove files after packaging
+ */
+gulp.task ("postpublish", function(){
+  var clean = require('gulp-clean');
+  gulp.src([
+      "./control"
+    ])
+    .pipe(clean());
+});
+
 gulp.task('tests', function() {
 	return gulp.src('test/**/*.js')
 		.pipe(babel({
@@ -54,12 +74,12 @@ gulp.task('tests', function() {
 });
 
 gulp.task('clean-js', function() {
-  return del(['./build/js/**/*.js']);
+  return del(['./dist/js/**/*.js']);
 });
 
 gulp.task('build-js', ['clean-js'], function() {
 
-  gulp.src(['./control/**/*.js'])
+  gulp.src(['./src/control/**/*.js'])
     .pipe(transform())
     .pipe(concat('comparisontools.js'))
     .pipe(gulp.dest('./dist/'))
@@ -76,4 +96,4 @@ gulp.task('build-js', ['clean-js'], function() {
 
 });
 
-gulp.task('build', ['build-js']);
+gulp.task('dist', ['build-js']);
