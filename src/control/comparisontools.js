@@ -1,5 +1,5 @@
 /**
- * @module ol/control/comparisonTools
+ * @module ol/control/comparisontools
  */
 
 import ol from 'ol';
