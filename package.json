@@ -48,6 +48,7 @@
     "chai": "^4.1.1",
     "del": "^3.0.0",
     "gulp-babel": "^7.0.1",
+    "gulp-clean": "^0.4.0",
     "gulp-concat-util": "^0.5.5",
     "gulp-rename": "^1.2.2",
     "gulp-replace-task": "^0.11.0",

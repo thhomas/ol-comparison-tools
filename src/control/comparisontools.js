@@ -3,16 +3,16 @@
  */
 
 import ol from 'ol';
-import ol_control_Bar from 'ol-ext/src/control/Bar';
+import ol_control_Bar from 'ol-ext/control/Bar';
 import ol_control_Zoom from 'ol/control/zoom';
 import ol_Map from 'ol/map';
 import ol_interaction from 'ol/interaction';
-import ol_interaction_Synchronize from 'ol-ext/src/interaction/Synchronize';
-import ol_control_Toggle from 'ol-ext/src/control/Toggle';
-import ol_control_Swipe from 'ol-ext/src/control/Swipe';
+import ol_interaction_Synchronize from 'ol-ext/interaction/Synchronize';
+import ol_control_Toggle from 'ol-ext/control/Toggle';
+import ol_control_Swipe from 'ol-ext/control/Swipe';
 import ol_control_Rotate from 'ol/control/rotate';
 import ol_control_Attribution from 'ol/control/attribution';
-import ol_interaction_Clip from 'ol-ext/src/interaction/Clip';
+import ol_interaction_Clip from 'ol-ext/interaction/Clip';
 import ol_layer_Tile from 'ol/layer/tile';
 
 /**

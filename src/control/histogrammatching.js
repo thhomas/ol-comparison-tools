@@ -8,7 +8,7 @@ import ol from 'ol';
 import ol_control_Control from 'ol/control/control';
 import ol_source_Raster from 'ol/source/raster';
 import ol_layer_Image from 'ol/layer/image';
-import ol_control_Toggle from 'ol-ext/src/control/Toggle';
+import ol_control_Toggle from 'ol-ext/control/Toggle';
 
 /**
  *
