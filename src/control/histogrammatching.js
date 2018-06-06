@@ -5,21 +5,21 @@
  */
 
 import ol from 'ol';
-import ol_control_Control from 'ol/control/control';
-import ol_source_Raster from 'ol/source/raster';
-import ol_layer_Image from 'ol/layer/image';
-import ol_control_Toggle from 'ol-ext/control/Toggle';
+import Control from 'ol/control/control';
+import RasterSource from 'ol/source/raster';
+import ImageLayer from 'ol/layer/image';
+import ToggleControl from 'ol-ext/control/Toggle';
 
 /**
  *
  * @constructor
- * @extends {ol.control.Control}
+ * @extends {module:ol/control/Control}
  * @param {Object=} opt_options Control options.
- *    layer1 {ol.Layer} layer to be reprocessed
- *    layer2 {ol.Layer} reference layer
+ *    layer1 {module:ol/Layer} layer to be reprocessed
+ *    layer2 {module:ol/Layer} reference layer
  *    classCount {number} number of class used when inverting histogram
  */
-var ol_control_HistogramMatching = function(options)  {
+const HistogramMatchingControl = function(options)  {
   if(!options) {
     options = {};
   }
@@ -32,7 +32,7 @@ var ol_control_HistogramMatching = function(options)  {
 
   this.active_ = false;
 
-  ol_control_Toggle.call(this, {
+  ToggleControl.call(this, {
     html: '<i class="fa fa-bar-chart"></i>',
     className: 'ol-histogram-matching',
     title: 'Adaptation d\'histogramme',
@@ -40,24 +40,24 @@ var ol_control_HistogramMatching = function(options)  {
   });
 
 };
-ol.inherits(ol_control_HistogramMatching, ol_control_Toggle);
+ol.inherits(HistogramMatchingControl, ToggleControl);
 
-ol_control_HistogramMatching.prototype.setMap = function(map) {
+HistogramMatchingControl.prototype.setMap = function(map) {
 
-  var me = this;
-  ol_control_Control.prototype.setMap.call(this, map);
+  let me = this;
+  Control.prototype.setMap.call(this, map);
   me.on('change:active', this.onToggle_);
 };
 
-ol_control_HistogramMatching.prototype.onToggle_ = function(toggle) {
+HistogramMatchingControl.prototype.onToggle_ = function(toggle) {
 
-  var me = this;
+  let me = this;
 
   $(me.element).find('button').blur();
 
   if(me.getActive() === true) {
 
-    var rasterSource = new ol_source_Raster({
+    let rasterSource = new RasterSource({
       sources: [me.layer1_.getSource(), me.layer2_.getSource()],
       operationType: 'image',
       operation: me.rasterOperation_,
@@ -68,7 +68,7 @@ ol_control_HistogramMatching.prototype.onToggle_ = function(toggle) {
         classCount: me.classCount_
       }
     });
-    me.layerProcessed_ = new ol_layer_Image({
+    me.layerProcessed_ = new ImageLayer({
       source: rasterSource,
       name: 'processedLayer'
     });
@@ -87,13 +87,13 @@ ol_control_HistogramMatching.prototype.onToggle_ = function(toggle) {
   }
 }
 
-ol_control_HistogramMatching.prototype.rasterOperation_ = function (inputs, data) {
+HistogramMatchingControl.prototype.rasterOperation_ = function (inputs, data) {
 
-  var imageData1 = inputs[0];
-  var imageData2 = inputs[1];
+  let imageData1 = inputs[0];
+  let imageData2 = inputs[1];
 
-  var histogram2 = computeHistogram(imageData2);
-  var histogram1 = computeHistogram(imageData1);
+  let histogram2 = computeHistogram(imageData2);
+  let histogram1 = computeHistogram(imageData1);
 
   if(histogram1.count === 0 || histogram2 === undefined || histogram2.count === 0) {
     return {
@@ -103,24 +103,24 @@ ol_control_HistogramMatching.prototype.rasterOperation_ = function (inputs, data
     }
   }
 
-  var options = options || {};
-  //var imageData = inputs[0];
-  var width = imageData1.width;
-  var height = imageData1.height;
-  var x = options.x ? options.x : 0;
-  var y = options.y ? options.y : 0;
-  var inputData = imageData1.data;
-  var outputData = new Uint8ClampedArray(inputData.length);
-  for (var y = 0, l = 0; y < height; ++y) {
-    var pixelsAbove = y * width;
-    for (var x = 0; x < width; ++x, l += 4) {
+  let options = options || {};
+  //let imageData = inputs[0];
+  let width = imageData1.width;
+  let height = imageData1.height;
+  let x = options.x ? options.x : 0;
+  let y = options.y ? options.y : 0;
+  let inputData = imageData1.data;
+  let outputData = new Uint8ClampedArray(inputData.length);
+  for (let y = 0, l = 0; y < height; ++y) {
+    let pixelsAbove = y * width;
+    for (let x = 0; x < width; ++x, l += 4) {
       /*if (this.isStopRequested())
           return null;*/
-      var r = inputData[l];
-      var g = inputData[l + 1];
-      var b = inputData[l + 2];
-      var a = inputData[l + 3];
-      var outputIndex = l;
+      let r = inputData[l];
+      let g = inputData[l + 1];
+      let b = inputData[l + 2];
+      let a = inputData[l + 3];
+      let outputIndex = l;
       outputData[outputIndex] = getInverseValue(histogram1.cumulative_red[Math.round(Math.max(0, Math.min(255, r)))], histogram2.inverse_red);
       outputData[outputIndex + 1] = getInverseValue(histogram1.cumulative_green[Math.round(Math.max(0, Math.min(255, g)))], histogram2.inverse_green);
       outputData[outputIndex + 2] = getInverseValue(histogram1.cumulative_blue[Math.round(Math.max(0, Math.min(255, b)))], histogram2.inverse_blue);
@@ -138,14 +138,14 @@ ol_control_HistogramMatching.prototype.rasterOperation_ = function (inputs, data
   };
 };
 
-ol_control_HistogramMatching.prototype.setLayer1 = function(layer) {
-  var me = this;
+HistogramMatchingControl.prototype.setLayer1 = function(layer) {
+  let me = this;
   me.layer1_ = layer;
 
 }
 
-ol_control_HistogramMatching.prototype.setLayer2 = function(layer) {
-  var me = this;
+HistogramMatchingControl.prototype.setLayer2 = function(layer) {
+  let me = this;
   me.layer2_ = layer;
 
 }
@@ -153,8 +153,8 @@ ol_control_HistogramMatching.prototype.setLayer2 = function(layer) {
 /**
  * @private
  */
-ol_control_HistogramMatching.prototype.getInverseClassIndex_ = function (value) {
-    var i = Math.floor(value * classCount); // compute inverse class index
+HistogramMatchingControl.prototype.getInverseClassIndex_ = function (value) {
+    let i = Math.floor(value * classCount); // compute inverse class index
     i = Math.max(0, Math.min(i, classCount - 1)); // clamp value
     return i;
 };
@@ -162,37 +162,37 @@ ol_control_HistogramMatching.prototype.getInverseClassIndex_ = function (value) 
 /**
  * @private
  */
-ol_control_HistogramMatching.prototype.getInverseValue_ = function (value, inverse_values) {
+HistogramMatchingControl.prototype.getInverseValue_ = function (value, inverse_values) {
     if (inverse_values == null)
         throw "inverse values cannot be undefined";
-    var inverseIndex = getInverseClassIndex(value);
+    let inverseIndex = getInverseClassIndex(value);
     // some cells may not be filled yet. If it is the case find previous and next filled cells
     // and compute a linear interpolation
     if (inverse_values[inverseIndex] == null) {
         // compute previous index
-        var previousIndex = inverseIndex - 1;
+        let previousIndex = inverseIndex - 1;
         while (previousIndex >= 0 && inverse_values[previousIndex] == null)
             previousIndex--;
         if (previousIndex < 0)
             previousIndex = null;
         // compute next index
-        var nextIndex = inverseIndex + 1;
+        let nextIndex = inverseIndex + 1;
         while (nextIndex < classCount && inverse_values[nextIndex] == null)
             nextIndex++;
         if (nextIndex >= classCount)
             nextIndex = null;
         // fill values from start, between two values or to the end
         if (previousIndex == null) {
-            for (var index = 0; index < nextIndex; index++)
+            for (let index = 0; index < nextIndex; index++)
                 inverse_values[index] = inverse_values[nextIndex];
         }
         else if (nextIndex == null) {
-            for (var index = previousIndex + 1; index < classCount; index++)
+            for (let index = previousIndex + 1; index < classCount; index++)
                 inverse_values[index] = inverse_values[previousIndex];
         }
         else {
-            for (var index = previousIndex + 1; index < nextIndex; index++) {
-                var alpha = (index - previousIndex) / (nextIndex - previousIndex);
+            for (let index = previousIndex + 1; index < nextIndex; index++) {
+                let alpha = (index - previousIndex) / (nextIndex - previousIndex);
                 inverse_values[index] = (1 - alpha) * inverse_values[previousIndex] + alpha * inverse_values[nextIndex];
             }
         }
@@ -203,8 +203,8 @@ ol_control_HistogramMatching.prototype.getInverseValue_ = function (value, inver
 /**
  * @private
  */
-ol_control_HistogramMatching.prototype.computeHistogram_ = function(imageData) {
-  var histogram = {
+HistogramMatchingControl.prototype.computeHistogram_ = function(imageData) {
+  let histogram = {
     red: new Array(256),
     cumulative_red: new Array(256),
     inverse_red: new Array(classCount),
@@ -216,16 +216,16 @@ ol_control_HistogramMatching.prototype.computeHistogram_ = function(imageData) {
     inverse_blue: new Array(classCount),
     count: 0
   };
-  for(var i=0; i<256; i++) {
+  for(let i=0; i<256; i++) {
     histogram.red[i] = histogram.green[i] = histogram.blue[i] = 0;
   }
   // compute histogram
-  var inputData = imageData.data;
-  var width = imageData.width;
-  var height = imageData.height;
-  for (var y = 0, l = 0; y < height; ++y) {
-      var pixelsAbove = y * width;
-      for (var x = 0; x < width; ++x, l += 4) {
+  let inputData = imageData.data;
+  let width = imageData.width;
+  let height = imageData.height;
+  for (let y = 0, l = 0; y < height; ++y) {
+      let pixelsAbove = y * width;
+      for (let x = 0; x < width; ++x, l += 4) {
           histogram.red[inputData[l]] += 1;
           histogram.green[inputData[l + 1]] += 1;
           histogram.blue[inputData[l + 2]] += 1;
@@ -238,16 +238,16 @@ ol_control_HistogramMatching.prototype.computeHistogram_ = function(imageData) {
   histogram.cumulative_red[0] = histogram.red[0] / histogram.count;
   histogram.cumulative_green[0] = histogram.green[0] / histogram.count;
   histogram.cumulative_blue[0] = histogram.blue[0] / histogram.count;
-  for (var i = 1; i < 256; i++) {
+  for (let i = 1; i < 256; i++) {
       histogram.cumulative_red[i] = histogram.cumulative_red[i - 1] + histogram.red[i] / histogram.count;
       histogram.cumulative_green[i] = histogram.cumulative_green[i - 1] + histogram.green[i] / histogram.count;
       histogram.cumulative_blue[i] = histogram.cumulative_blue[i - 1] + histogram.blue[i] / histogram.count;
   }
   // compute inverse
-  for (var i = 0; i < classCount; i++) {
+  for (let i = 0; i < classCount; i++) {
       histogram.inverse_red[i] = histogram.inverse_green[i] = histogram.inverse_blue[i] = null;
   }
-  for (var i = 0; i < 255; i++) {
+  for (let i = 0; i < 255; i++) {
       histogram.inverse_red[getInverseClassIndex(histogram.cumulative_red[i])] = i;
       histogram.inverse_green[getInverseClassIndex(histogram.cumulative_green[i])] = i;
       histogram.inverse_blue[getInverseClassIndex(histogram.cumulative_blue[i])] = i;
@@ -256,12 +256,12 @@ ol_control_HistogramMatching.prototype.computeHistogram_ = function(imageData) {
   return histogram;
 };
 
-ol_control_HistogramMatching.prototype.getLayerProcessed = function() {
+HistogramMatchingControl.prototype.getLayerProcessed = function() {
   return this.layerProcessed_;
 }
 
 
-var Histogram = (function () {
+const Histogram = (function () {
     function Histogram() {
         this.count = 0;
         this.red = null;
@@ -279,18 +279,18 @@ var Histogram = (function () {
         this.red = new Array(256);
         this.green = new Array(256);
         this.blue = new Array(256);
-        for (var i = 0; i < 256; i++)
+        for (let i = 0; i < 256; i++)
             this.red[i] = this.green[i] = this.blue[i] = 0;
     }
     /* Compute an RGB histogram from a 2D context */
     Histogram.prototype.computeFromContext = function (context) {
-        var canvas = context.canvas;
-        var width = canvas.width;
-        var height = canvas.height;
-        var inputData = context.getImageData(0, 0, width, height).data;
-        for (var y = 0, l = 0; y < height; ++y) {
-            var pixelsAbove = y * width;
-            for (var x = 0; x < width; ++x, l += 4) {
+        let canvas = context.canvas;
+        let width = canvas.width;
+        let height = canvas.height;
+        let inputData = context.getImageData(0, 0, width, height).data;
+        for (let y = 0, l = 0; y < height; ++y) {
+            let pixelsAbove = y * width;
+            for (let x = 0; x < width; ++x, l += 4) {
                 this.red[inputData[l]] += 1;
                 this.green[inputData[l + 1]] += 1;
                 this.blue[inputData[l + 2]] += 1;
@@ -300,15 +300,15 @@ var Histogram = (function () {
         this.invalidatePrecomputation();
     };
     Histogram.prototype.computeFromCroppedContext = function(context, options) {
-      var canvas = context.canvas;
-      var width = options.width ? options.width : canvas.width;
-      var height = options.height ? options.height : canvas.height;
-      var x = options.x ? options.x : 0;
-      var y = options.y ? options.y : 0;
-      var inputData = context.getImageData(x, y, width, height).data;
-      for (var y = 0, l = 0; y < height; ++y) {
-          var pixelsAbove = y * width;
-          for (var x = 0; x < width; ++x, l += 4) {
+      let canvas = context.canvas;
+      let width = options.width ? options.width : canvas.width;
+      let height = options.height ? options.height : canvas.height;
+      let x = options.x ? options.x : 0;
+      let y = options.y ? options.y : 0;
+      let inputData = context.getImageData(x, y, width, height).data;
+      for (let y = 0, l = 0; y < height; ++y) {
+          let pixelsAbove = y * width;
+          for (let x = 0; x < width; ++x, l += 4) {
               this.red[inputData[l]] += 1;
               this.green[inputData[l + 1]] += 1;
               this.blue[inputData[l + 2]] += 1;
@@ -318,18 +318,18 @@ var Histogram = (function () {
       this.invalidatePrecomputation();
     };
     Histogram.prototype.compute = function(imageData) {
-      var histogram = {
+      let histogram = {
         red: [],
         green: [],
         blue: [],
         count: 0
       };
-      var inputData = imageData.data;
-      var width = imageData.width;
-      var height = imageData.height;
-      for (var y = 0, l = 0; y < height; ++y) {
-          var pixelsAbove = y * width;
-          for (var x = 0; x < width; ++x, l += 4) {
+      let inputData = imageData.data;
+      let width = imageData.width;
+      let height = imageData.height;
+      for (let y = 0, l = 0; y < height; ++y) {
+          let pixelsAbove = y * width;
+          for (let x = 0; x < width; ++x, l += 4) {
               histogram.red[inputData[l]] += 1;
               histogram.green[inputData[l + 1]] += 1;
               histogram.blue[inputData[l + 2]] += 1;
@@ -348,7 +348,7 @@ var Histogram = (function () {
         this.cumulative_red[0] = this.red[0] / this.count;
         this.cumulative_green[0] = this.green[0] / this.count;
         this.cumulative_blue[0] = this.blue[0] / this.count;
-        for (var i = 1; i < 256; i++) {
+        for (let i = 1; i < 256; i++) {
             this.cumulative_red[i] = this.cumulative_red[i - 1] + this.red[i] / this.count;
             this.cumulative_green[i] = this.cumulative_green[i - 1] + this.green[i] / this.count;
             this.cumulative_blue[i] = this.cumulative_blue[i - 1] + this.blue[i] / this.count;
@@ -368,7 +368,7 @@ var Histogram = (function () {
      * return a value between 0 (included) and INVERSE_CLASS_COUNT (excluded)
      */
     Histogram.prototype.getInverseClassIndex = function (value) {
-        var i = Math.floor(value * Histogram.INVERSE_CLASS_COUNT); // compute inverse class index
+        let i = Math.floor(value * Histogram.INVERSE_CLASS_COUNT); // compute inverse class index
         i = Math.max(0, Math.min(i, Histogram.INVERSE_CLASS_COUNT - 1)); // clamp value
         return i;
     };
@@ -376,34 +376,34 @@ var Histogram = (function () {
     Histogram.prototype.getInverseValue = function (value, inverse_values) {
         if (inverse_values == null)
             throw "inverse values cannot be undefined";
-        var inverseIndex = this.getInverseClassIndex(value);
+        let inverseIndex = this.getInverseClassIndex(value);
         // some cells may not be filled yet. If it is the case find previous and next filled cells
         // and compute a linear interpolation
         if (inverse_values[inverseIndex] == null) {
             // compute previous index
-            var previousIndex = inverseIndex - 1;
+            let previousIndex = inverseIndex - 1;
             while (previousIndex >= 0 && inverse_values[previousIndex] == null)
                 previousIndex--;
             if (previousIndex < 0)
                 previousIndex = null;
             // compute next index
-            var nextIndex = inverseIndex + 1;
+            let nextIndex = inverseIndex + 1;
             while (nextIndex < Histogram.INVERSE_CLASS_COUNT && inverse_values[nextIndex] == null)
                 nextIndex++;
             if (nextIndex >= Histogram.INVERSE_CLASS_COUNT)
                 nextIndex = null;
             // fill values from start, between two values or to the end
             if (previousIndex == null) {
-                for (var index = 0; index < nextIndex; index++)
+                for (let index = 0; index < nextIndex; index++)
                     inverse_values[index] = inverse_values[nextIndex];
             }
             else if (nextIndex == null) {
-                for (var index = previousIndex + 1; index < Histogram.INVERSE_CLASS_COUNT; index++)
+                for (let index = previousIndex + 1; index < Histogram.INVERSE_CLASS_COUNT; index++)
                     inverse_values[index] = inverse_values[previousIndex];
             }
             else {
-                for (var index = previousIndex + 1; index < nextIndex; index++) {
-                    var alpha = (index - previousIndex) / (nextIndex - previousIndex);
+                for (let index = previousIndex + 1; index < nextIndex; index++) {
+                    let alpha = (index - previousIndex) / (nextIndex - previousIndex);
                     inverse_values[index] = (1 - alpha) * inverse_values[previousIndex] + alpha * inverse_values[nextIndex];
                 }
             }
@@ -479,10 +479,10 @@ var Histogram = (function () {
         this.inverse_red = new Array(Histogram.INVERSE_CLASS_COUNT);
         this.inverse_green = new Array(Histogram.INVERSE_CLASS_COUNT);
         this.inverse_blue = new Array(Histogram.INVERSE_CLASS_COUNT);
-        for (var i = 0; i < Histogram.INVERSE_CLASS_COUNT; i++) {
+        for (let i = 0; i < Histogram.INVERSE_CLASS_COUNT; i++) {
             this.inverse_red[i] = this.inverse_green[i] = this.inverse_blue[i] = null;
         }
-        for (var i = 0; i < 255; i++) {
+        for (let i = 0; i < 255; i++) {
             this.inverse_red[this.getInverseClassIndex(this.getCumulativeRed(i))] = i;
             this.inverse_green[this.getInverseClassIndex(this.getCumulativeGreen(i))] = i;
             this.inverse_blue[this.getInverseClassIndex(this.getCumulativeBlue(i))] = i;
@@ -494,4 +494,4 @@ var Histogram = (function () {
 }()); // class Histogram
 
 
-export default ol_control_HistogramMatching;
+export default HistogramMatchingControl;

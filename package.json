@@ -1,8 +1,8 @@
 {
   "name": "ol-comparison-tools",
-  "version": "1.0.0",
+  "version": "v1.0.0-beta.1",
   "description": "An Openlayers extension adding a control to handle comparison tools between 2 layers.",
-  "main": "comparisonTools.js",
+  "main": "comparisontools.js",
   "directories": {
     "example": "examples",
     "test": "test"
@@ -20,7 +20,7 @@
   },
   "keywords": [
     "openlayers",
-    "ol3-ext",
+    "ol-ext",
     "swipe",
     "clip"
   ],
@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/thhomas/ol-comparison-tools#readme",
   "dependencies": {
-    "gulp": "^3.9.1",
     "jquery": "^3.3.1",
     "ol": "^4.6.4",
     "ol-ext": "^2.0.0"
@@ -47,6 +46,7 @@
     "browserify": "^16.0.0",
     "chai": "^4.1.1",
     "del": "^3.0.0",
+    "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-clean": "^0.4.0",
     "gulp-concat-util": "^0.5.5",
