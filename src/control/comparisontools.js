@@ -157,7 +157,7 @@ ComparisonTools.prototype.setMap = function(map) {
     mapDiv.parentElement.appendChild(mapDiv2);
 
     this.clonedMap_ = new Map({
-      target: mapDiv2[0],
+      target: mapDiv2,
       renderer: map.renderer,
       interactions: Interaction.defaults(),
       view: map.getView(),
