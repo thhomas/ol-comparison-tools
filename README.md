@@ -41,3 +41,17 @@ import ComparisonTools from 'ol-comparison-tools/control/comparisontools';
 ```html
 <script src="ol-comparison-tools/dist/comparisontools.min.js" type="text/javascript"></script>
 ```
+
+Examples
+--------
+
+To run examples, build them with
+````
+npm run build-examples
+````
+then serve with
+````
+npm run serve
+````
+and browse to http://localhost:8080/examples/package/example.html
+

@@ -2,18 +2,16 @@
  * @module ol/control/comparisontools
  */
 
-import ol from 'ol';
+import {inherits} from 'ol';
+import {Zoom as ZoomControl, Rotate as RotateControl, Attribution as AttributionControl} from 'ol/control.js';
+import Map from 'ol/Map.js';
+import {defaults as defaultInteractions} from 'ol/interaction.js';
+import TileLayer from 'ol/layer/Tile.js';
 import BarControl from 'ol-ext/control/Bar';
-import ZoomControl from 'ol/control/zoom';
-import Map from 'ol/map';
-import Interaction from 'ol/interaction';
 import SynchronizeInteraction from 'ol-ext/interaction/Synchronize';
 import ToggleControl from 'ol-ext/control/Toggle';
 import SwipeControl from 'ol-ext/control/Swipe';
-import RotateControl from 'ol/control/rotate';
-import AttributionControl from 'ol/control/attribution';
 import ClipInteraction from 'ol-ext/interaction/Clip';
-import TileLayer from 'ol/layer/tile';
 
 /**
  * @classdesc
@@ -36,6 +34,7 @@ const ComparisonTools = function(options)  {
   if(!options) {
     options = {};
   }
+  let self = this;
 
   this.controls_ = [];
   this.clonedMap_;
@@ -82,7 +81,9 @@ const ComparisonTools = function(options)  {
         active: false
       });
       verticalControl.set('name', controlName+'Toggle');
-      verticalControl.on('change:active', this.onVerticalControlChange_, this);
+      verticalControl.on('change:active', function(event) {
+        self.onVerticalControlChange_(event, self);
+      });
       this.addControl(verticalControl);
     } else if(controlName === 'hSlider') {
       let horizontalControl = new ToggleControl({
@@ -92,7 +93,9 @@ const ComparisonTools = function(options)  {
         active: false,
       });
       horizontalControl.set('name', controlName+'Toggle');
-      horizontalControl.on('change:active', this.onHorizontalControlChange_, this);
+      horizontalControl.on('change:active', function(event) {
+        self.onHorizontalControlChange_(event, self);
+      });
       this.addControl(horizontalControl);
     } else if(controlName === 'scope') {
       let scopeControl = new ToggleControl({
@@ -103,7 +106,9 @@ const ComparisonTools = function(options)  {
         active: false
       });
       scopeControl.set('name', controlName+'Toggle');
-      scopeControl.on('change:active', this.onScopeControlChange_, this);
+      scopeControl.on('change:active', function(event) {
+        self.onScopeControlChange_(event, self);
+      });
       this.addControl(scopeControl);
     } else if(controlName === 'clipLayer') {
       let clipLayerControl = new ToggleControl({
@@ -113,7 +118,9 @@ const ComparisonTools = function(options)  {
         active: false
       });
       clipLayerControl.set('name', controlName+'Toggle');
-      clipLayerControl.on('change:active', this.onClipLayerControlChange_, this);
+      clipLayerControl.on('change:active', function(event) {
+        self.onClipLayerControlChange_(event, self);
+      });
       this.addControl(clipLayerControl);
     } else if(controlName === 'doubleMap') {
 
@@ -125,14 +132,16 @@ const ComparisonTools = function(options)  {
         active: false
       });
       doubleMapControl.set('name', controlName+'Toggle');
-      doubleMapControl.on('change:active', this.onDoubleMapControlChange_, this);
+      doubleMapControl.on('change:active', function(event) {
+        self.onDoubleMapControlChange_(event, self);
+      });
       this.addControl(doubleMapControl);
     }
   }
 
 
 };
-ol.inherits(ComparisonTools, BarControl);
+inherits(ComparisonTools, BarControl);
 
 ComparisonTools.prototype.setMap = function(map) {
   BarControl.prototype.setMap.call(this, map);
@@ -158,8 +167,8 @@ ComparisonTools.prototype.setMap = function(map) {
 
     this.clonedMap_ = new Map({
       target: mapDiv2,
-      renderer: map.renderer,
-      interactions: Interaction.defaults(),
+      renderer: map.getRenderer(),
+      interactions: defaultInteractions(),
       view: map.getView(),
       controls: [
         new ZoomControl({

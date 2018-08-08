@@ -3,12 +3,13 @@ var gulp = require('gulp'),
     del = require('del'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
-    sourcemaps = require('gulp-sourcemaps'),
-    fs = require('fs'),
-    replace = require('gulp-replace-task'),
     concat = require('gulp-concat-util'),
     through = require('through2'),
-    babel = require('gulp-babel');
+    babel = require('gulp-babel'),
+    uglifyes = require('uglify-es'),
+    pump = require('pump'),
+    composer = require('gulp-uglify/composer'),
+    webpack = require('webpack-stream');
 
 function transform() {
   return through.obj(function(file, encoding, callback) {
@@ -78,13 +79,13 @@ gulp.task('clean-js', function() {
 });
 
 gulp.task('build-js', ['clean-js'], function() {
-
+  var minify = composer(uglifyes, console)
   gulp.src(['./src/control/**/*.js'])
     .pipe(transform())
     .pipe(concat('comparisontools.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(rename({extname: '.min.js'}))
-    .pipe(uglify({
+    .pipe(minify({
             output: {
               preamble: '/**\n* Author: Thomas Tilak\n* github: https://github.com/thhomas/ol-comparison-tools\n* licence: MIT\n*/\n'
             }
@@ -94,6 +95,16 @@ gulp.task('build-js', ['clean-js'], function() {
     })
     .pipe(gulp.dest('./dist/'));
 
+});
+
+gulp.task('build-examples', function() {
+  return gulp.src('examples/example-package/example.js')
+    .pipe(webpack({
+      output: {
+        filename: 'bundle.js'
+      }
+    }))
+    .pipe(gulp.dest('examples/example-package/dist'));
 });
 
 gulp.task('dist', ['build-js']);
