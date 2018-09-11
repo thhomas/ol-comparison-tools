@@ -35,7 +35,11 @@ Quickstart
 ol-comparison-tools is available
 - as a javascript module:
 ```javascript
-import ComparisonTools from 'ol-comparison-tools/control/comparisontools';
+import ol_control_ComparisonTools from 'ol-comparison-tools/control/ComparisonTools.js';
+```
+or
+```javascript
+import {ComparisonTools as ComparisonToolsControl} from 'ol-comparison-tools/control.js';
 ```
 - loading the script in html:
 ```html

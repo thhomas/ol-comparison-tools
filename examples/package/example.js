@@ -2,7 +2,7 @@ import {Map, View} from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import {TileJSON as TileJSONSource, OSM as OSMSource} from 'ol/source.js';
 
-import ComparisonTools from '../../src/control/comparisontools.js'
+import {ComparisonTools as ComparisonToolsControl} from '../../src/control.js'
 
 var layer1 = new TileLayer({
   source: new TileJSONSource({
@@ -24,7 +24,7 @@ var olMap = new Map({
   })
 });
 
-var control = new ComparisonTools({
+var control = new ComparisonToolsControl({
   leftLayer: layer1,
   rightLayer: layer2
 });

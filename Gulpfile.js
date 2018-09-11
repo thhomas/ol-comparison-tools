@@ -31,8 +31,9 @@ function transform() {
         content = content.replace(/(\bol_([a-z,A-Z]*)_([a-z,A-Z]*))/g,"ol.$2.$3");
         // change ol_Class => ol.namespace.Class
         content = content.replace(/(\bol_([a-z,A-Z]*))/g,"ol.$2");
-        // change var ol.Class => ol.Class
+        // change var ol.Class => ol.Class and const ol.Class => ol.Class
         content = content.replace(/(\bvar ol\.([a-z,A-Z]*))/g,"ol.$2");
+        content = content.replace(/(\bconst ol\.([a-z,A-Z]*))/g,"ol.$2");
         // remove import / export
         content = content.replace(/\bimport (.*)|\bexport (.*)/g,"");
         // remove empty lines
@@ -98,13 +99,13 @@ gulp.task('build-js', ['clean-js'], function() {
 });
 
 gulp.task('build-examples', function() {
-  return gulp.src('examples/example-package/example.js')
+  return gulp.src('examples/package/example.js')
     .pipe(webpack({
       output: {
         filename: 'bundle.js'
       }
     }))
-    .pipe(gulp.dest('examples/example-package/dist'));
+    .pipe(gulp.dest('examples/package/dist'));
 });
 
 gulp.task('dist', ['build-js']);

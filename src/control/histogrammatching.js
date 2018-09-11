@@ -4,11 +4,11 @@
  * cf. https://en.wikipedia.org/wiki/Histogram_matching
  */
 
-import ol from 'ol';
-import Control from 'ol/control/control';
-import RasterSource from 'ol/source/raster';
-import ImageLayer from 'ol/layer/image';
-import ToggleControl from 'ol-ext/control/Toggle';
+import {inherits as ol_inherits} from 'ol';
+import {Control as ol_control_Control} from 'ol/control.js';
+import {Raster as ol_source_Raster} from 'ol/source.js';
+import {Image as ol_layer_Image} from 'ol/layer.js';
+import ol_control_Toggle from 'ol-ext/control/Toggle.js';
 
 /**
  *
@@ -19,7 +19,7 @@ import ToggleControl from 'ol-ext/control/Toggle';
  *    layer2 {module:ol/Layer} reference layer
  *    classCount {number} number of class used when inverting histogram
  */
-const HistogramMatchingControl = function(options)  {
+const ol_control_HistogramMatching = function(options)  {
   if(!options) {
     options = {};
   }
@@ -32,7 +32,7 @@ const HistogramMatchingControl = function(options)  {
 
   this.active_ = false;
 
-  ToggleControl.call(this, {
+  ol_control_Toggle.call(this, {
     html: '<i class="fa fa-bar-chart"></i>',
     className: 'ol-histogram-matching',
     title: 'Adaptation d\'histogramme',
@@ -40,16 +40,16 @@ const HistogramMatchingControl = function(options)  {
   });
 
 };
-ol.inherits(HistogramMatchingControl, ToggleControl);
+ol_inherits(ol_control_HistogramMatching, ol_control_Toggle);
 
-HistogramMatchingControl.prototype.setMap = function(map) {
+ol_control_HistogramMatching.prototype.setMap = function(map) {
 
   let me = this;
-  Control.prototype.setMap.call(this, map);
+  ol_control_Control.prototype.setMap.call(this, map);
   me.on('change:active', this.onToggle_);
 };
 
-HistogramMatchingControl.prototype.onToggle_ = function(toggle) {
+ol_control_HistogramMatching.prototype.onToggle_ = function(toggle) {
 
   let me = this;
 
@@ -57,7 +57,7 @@ HistogramMatchingControl.prototype.onToggle_ = function(toggle) {
 
   if(me.getActive() === true) {
 
-    let rasterSource = new RasterSource({
+    let rasterSource = new ol_source_Raster({
       sources: [me.layer1_.getSource(), me.layer2_.getSource()],
       operationType: 'image',
       operation: me.rasterOperation_,
@@ -68,7 +68,7 @@ HistogramMatchingControl.prototype.onToggle_ = function(toggle) {
         classCount: me.classCount_
       }
     });
-    me.layerProcessed_ = new ImageLayer({
+    me.layerProcessed_ = new ol_layer_Image({
       source: rasterSource,
       name: 'processedLayer'
     });
@@ -87,7 +87,7 @@ HistogramMatchingControl.prototype.onToggle_ = function(toggle) {
   }
 }
 
-HistogramMatchingControl.prototype.rasterOperation_ = function (inputs, data) {
+ol_control_HistogramMatching.prototype.rasterOperation_ = function (inputs, data) {
 
   let imageData1 = inputs[0];
   let imageData2 = inputs[1];
@@ -138,13 +138,13 @@ HistogramMatchingControl.prototype.rasterOperation_ = function (inputs, data) {
   };
 };
 
-HistogramMatchingControl.prototype.setLayer1 = function(layer) {
+ol_control_HistogramMatching.prototype.setLayer1 = function(layer) {
   let me = this;
   me.layer1_ = layer;
 
 }
 
-HistogramMatchingControl.prototype.setLayer2 = function(layer) {
+ol_control_HistogramMatching.prototype.setLayer2 = function(layer) {
   let me = this;
   me.layer2_ = layer;
 
@@ -153,7 +153,7 @@ HistogramMatchingControl.prototype.setLayer2 = function(layer) {
 /**
  * @private
  */
-HistogramMatchingControl.prototype.getInverseClassIndex_ = function (value) {
+ol_control_HistogramMatching.prototype.getInverseClassIndex_ = function (value) {
     let i = Math.floor(value * classCount); // compute inverse class index
     i = Math.max(0, Math.min(i, classCount - 1)); // clamp value
     return i;
@@ -162,7 +162,7 @@ HistogramMatchingControl.prototype.getInverseClassIndex_ = function (value) {
 /**
  * @private
  */
-HistogramMatchingControl.prototype.getInverseValue_ = function (value, inverse_values) {
+ol_control_HistogramMatching.prototype.getInverseValue_ = function (value, inverse_values) {
     if (inverse_values == null)
         throw "inverse values cannot be undefined";
     let inverseIndex = getInverseClassIndex(value);
@@ -203,7 +203,7 @@ HistogramMatchingControl.prototype.getInverseValue_ = function (value, inverse_v
 /**
  * @private
  */
-HistogramMatchingControl.prototype.computeHistogram_ = function(imageData) {
+ol_control_HistogramMatching.prototype.computeHistogram_ = function(imageData) {
   let histogram = {
     red: new Array(256),
     cumulative_red: new Array(256),
@@ -256,7 +256,7 @@ HistogramMatchingControl.prototype.computeHistogram_ = function(imageData) {
   return histogram;
 };
 
-HistogramMatchingControl.prototype.getLayerProcessed = function() {
+ol_control_HistogramMatching.prototype.getLayerProcessed = function() {
   return this.layerProcessed_;
 }
 
@@ -494,4 +494,4 @@ const Histogram = (function () {
 }()); // class Histogram
 
 
-export default HistogramMatchingControl;
+export default ol_control_HistogramMatching;
