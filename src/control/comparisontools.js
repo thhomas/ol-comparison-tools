@@ -165,7 +165,7 @@ ComparisonTools.prototype.setMap = function(map) {
 
     mapDiv.parentElement.appendChild(mapDiv2);
 
-    this.clonedMap_ = new Map({
+    map.clonedMap_ = new Map({
       target: mapDiv2,
       renderer: map.getRenderer(),
       interactions: defaultInteractions(),
@@ -181,8 +181,8 @@ ComparisonTools.prototype.setMap = function(map) {
     });
 
     // add synchronize interaction between maps
-    map.addInteraction( new SynchronizeInteraction({maps: [this.clonedMap_]}));
-    this.clonedMap_.addInteraction( new SynchronizeInteraction({maps: [map]}));
+    map.addInteraction( new SynchronizeInteraction({maps: [map.clonedMap_]}));
+    map.clonedMap_.addInteraction( new SynchronizeInteraction({maps: [map]}));
 
   }
 };
@@ -283,7 +283,7 @@ ComparisonTools.prototype.onClipLayerControlChange_ = function(event) {
  */
 ComparisonTools.prototype.onDoubleMapControlChange_ = function(event) {
   let mapDiv = this.getMap().getViewport().parentElement;
-  let mapDiv2 = this.getClonedMap().getViewport().parentElement;
+  let mapDiv2 = this.getMap().clonedMap_.getViewport().parentElement;
   if(event.active) {
 
     mapDiv2.style.float =  'left';
@@ -496,7 +496,7 @@ ComparisonTools.prototype.getLeftLayer = function() {
  * @return {module:ol/map} cloned map
  */
 ComparisonTools.prototype.getClonedMap = function() {
-  return this.clonedMap_;
+  return this.map_.clonedMap_;
 }
 
 /**
@@ -529,6 +529,14 @@ ComparisonTools.prototype.getVSwipeControl = function() {
  */
 ComparisonTools.prototype.getHSwipeControl = function() {
   return this.hSwipeControl_;
+}
+
+/**
+ * Get cloned map
+ * @return {module:ol/map} cloned map
+ */
+Map.prototype.getClonedMap = function() {
+  return this.clonedMap_;
 }
 
 export default ComparisonTools;
