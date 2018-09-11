@@ -1,8 +1,8 @@
 {
   "name": "ol-comparison-tools",
-  "version": "v1.0.0-beta.4",
+  "version": "v1.0.1",
   "description": "An Openlayers extension adding a control to handle comparison tools between 2 layers.",
-  "main": "comparisontools.js",
+  "main": "control.js",
   "directories": {
     "example": "examples",
     "test": "test"

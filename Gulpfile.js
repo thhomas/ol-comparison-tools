@@ -51,7 +51,7 @@ function transform() {
  * for packaging
  */
 gulp.task ("prepublish", function(){
-  gulp.src(["./src/*/*.*"], { base: './src' })
+  gulp.src(["./src/*/*.*", "./src/*.js"], { base: './src' })
     .pipe(gulp.dest('./'));
 });
 
@@ -60,9 +60,7 @@ gulp.task ("prepublish", function(){
  */
 gulp.task ("postpublish", function(){
   var clean = require('gulp-clean');
-  gulp.src([
-      "./control"
-    ])
+  gulp.src(["./control", "./control.js"])
     .pipe(clean());
 });
 

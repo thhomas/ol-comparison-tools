@@ -457,7 +457,7 @@ ol.control.ComparisonTools.prototype.getHSwipeControl = function() {
  * Get cloned map
  * @return {module:ol/map} cloned map
  */
-Map.prototype.getClonedMap = function() {
+ol.Map.prototype.getClonedMap = function() {
   return this.clonedMap_;
 }
 
