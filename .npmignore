@@ -1,7 +1,5 @@
 # ignore examples
 examples
-# ignore the dist
-dist
 # ignore the test dir
 test
 # ignore the src (copy in the root)
