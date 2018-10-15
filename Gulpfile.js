@@ -1,15 +1,15 @@
 'use strict';
 var gulp = require('gulp'),
     del = require('del'),
-    uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat-util'),
     through = require('through2'),
     babel = require('gulp-babel'),
     uglifyes = require('uglify-es'),
-    pump = require('pump'),
     composer = require('gulp-uglify/composer'),
-    webpack = require('webpack-stream');
+    webpack = require('webpack-stream'),
+    cssmin = require('gulp-cssmin'),
+    sass = require('gulp-sass');
 
 function transform() {
   return through.obj(function(file, encoding, callback) {
@@ -96,14 +96,34 @@ gulp.task('build-js', ['clean-js'], function() {
 
 });
 
+// Build css. Use --debug to build in debug mode
+gulp.task('build-css', function () {
+  gulp.src([
+		"./src/control/*.css"
+	])
+  .pipe(concat('comparisontools.css'))
+  .pipe(gulp.dest('./dist'));
+
+  gulp.src([
+		"./src/control/*.css"
+	])
+  .pipe(concat('comparisontools.min.css'))
+  .pipe(cssmin())
+  .pipe(gulp.dest('./dist'));
+});
+
 gulp.task('build-examples', function() {
-  return gulp.src('examples/package/example.js')
+  gulp.src('examples/package/example.js')
     .pipe(webpack({
       output: {
         filename: 'bundle.js'
       }
     }))
     .pipe(gulp.dest('examples/package/dist'));
+
+  gulp.src('examples/package/example.scss')
+    .pipe(sass())
+    .pipe(gulp.dest('examples/package/dist'));
 });
 
-gulp.task('dist', ['build-js']);
+gulp.task('dist', ['build-js', 'build-css']);

@@ -3,6 +3,7 @@ import TileLayer from 'ol/layer/Tile';
 import {TileJSON as TileJSONSource, OSM as OSMSource} from 'ol/source.js';
 
 import {ComparisonTools as ComparisonToolsControl} from '../../src/control.js'
+import {HistogramMatching as HistogramMatchingControl} from '../../src/control.js'
 
 var layer1 = new TileLayer({
   source: new TileJSONSource({
@@ -24,11 +25,17 @@ var olMap = new Map({
   })
 });
 
-var control = new ComparisonToolsControl({
+var ccontrol = new ComparisonToolsControl({
   leftLayer: layer1,
   rightLayer: layer2
 });
 
-olMap.addControl(control);
-control.setDisplayMode('doubleMap');
+var hcontrol = new HistogramMatchingControl({
+  layer1: layer1,
+  layer2: layer2
+});
+
+olMap.addControl(ccontrol);
+olMap.addControl(hcontrol);
+ccontrol.setDisplayMode('doubleMap');
 
