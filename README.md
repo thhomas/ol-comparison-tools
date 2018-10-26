@@ -6,6 +6,11 @@ To make it works, it needs font-awesome css add:
 ```
 to your HTML page.
 
-To browse examples, start a web server with `npm run serve` and browse http://localhost:8080/examples/example.html.
+To browse examples,
+
+* install dependencies with `npm install`
+* start a web server with `npm run serve` and browse http://localhost:8080/examples/example.html.
 
 To run tests, either do `npm run test` or start a web server and browse http://localhost:8080/test/TestRunner.html file.
+
+If you want to hack/modify the plugin, you can rebuild it doing `npm run build`.
