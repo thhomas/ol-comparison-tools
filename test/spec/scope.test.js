@@ -24,7 +24,7 @@ describe('scope control behaviour', function() {
       rightLayer: layer2
     });
 
-    var map = new ol.Map({
+    new ol.Map({
       target: mapDiv,
       layers: [layer1,layer2],
       controls: [comparisonTools]

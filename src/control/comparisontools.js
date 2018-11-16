@@ -1,22 +1,40 @@
-/** An Control bar with comparison tools
+/**
+ * @module ol/control/comparisontools
+ */
+
+import {inherits as ol_inherits} from 'ol';
+import {Zoom as ol_control_Zoom, Rotate as ol_control_Rotate, Attribution as ol_control_Attribution} from 'ol/control.js';
+import {Map as ol_Map} from 'ol';
+import {defaults as ol_defaultInteractions} from 'ol/interaction.js';
+import {Tile as ol_layer_Tile} from 'ol/layer.js';
+import ol_control_Bar from 'ol-ext/control/Bar.js';
+import ol_interaction_Synchronize from 'ol-ext/interaction/Synchronize.js';
+import ol_control_Toggle from 'ol-ext/control/Toggle.js';
+import ol_control_Swipe from 'ol-ext/control/Swipe.js';
+import ol_interaction_Clip from 'ol-ext/interaction/Clip.js';
+
+/**
+ * @classdesc
+ * An Control bar with comparison tools
  * The display bar is a container for other controls. It is an extension of Control Bar
  *
  * @constructor
- * @extends {ol.control.Bar}
+ * @extends {module:ol-ext/control/Bar}
  * @param {Object=} opt_options Control options.
  *    className {String} class of the control
  *    group {bool} is a group, default false
- *    rightLayer {ol.layer} layer to compare to
- *    leftLayer {ol.layer} layer compared
+ *    rightLayer {module:ol/layer} layer to compare to
+ *    leftLayer {module:ol/layer} layer compared
  *    toggleOne {bool} only one toggle control is active at a time, default false
  *    autoDeactivate {bool} used with subbar to deactivate all control when top level control deactivate, default false
  *    displayMode {string}
  *    controlNames {Array.<string>} a list of control name to add to the comparison toolset (can be 'hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap')
  */
-ol.control.ComparisonTools = function(options)  {
+const ol_control_ComparisonTools = function(options)  {
   if(!options) {
     options = {};
   }
+  let self = this;
 
   this.controls_ = [];
   this.clonedMap_;
@@ -29,14 +47,14 @@ ol.control.ComparisonTools = function(options)  {
   this.vSwipeControl_;
   this.hSwipeControl_;
 
-  ol.control.Bar.call(this, {
+  ol_control_Bar.call(this, {
     group: true,
     toggleOne: true,
     className: options.className,
     controls: this.controls_
   });
 
-  var controlNames = options.controlNames || ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap'];
+  let controlNames = options.controlNames || ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap'];
 
   if(options.rightLayer) {
     this.rightLayer_ = options.rightLayer;
@@ -53,30 +71,34 @@ ol.control.ComparisonTools = function(options)  {
   this.useCloneLayer_ = options.useCloneLayer === true ? options.useCloneLayer :false;
 
 
-  for(var i=0; i<controlNames.length; i++) {
-    var controlName = controlNames[i];
+  for(let i=0; i<controlNames.length; i++) {
+    let controlName = controlNames[i];
     if(controlName === 'vSlider') {
-      var verticalControl = new ol.control.Toggle({
+      let verticalControl = new ol_control_Toggle({
         html: '<i class="fa fa-arrows-v"></i>',
         className: 'vertical-button',
         title: 'Comparaison verticale',
         active: false
       });
       verticalControl.set('name', controlName+'Toggle');
-      verticalControl.on('change:active', this.onVerticalControlChange_, this);
+      verticalControl.on('change:active', function(event) {
+        self.onVerticalControlChange_(event, self);
+      });
       this.addControl(verticalControl);
     } else if(controlName === 'hSlider') {
-      var horizontalControl = new ol.control.Toggle({
+      let horizontalControl = new ol_control_Toggle({
         html: '<i class="fa fa-arrows-h"></i>',
         className: 'horizontal-button',
         title: 'Comparaison horizontale',
         active: false,
       });
       horizontalControl.set('name', controlName+'Toggle');
-      horizontalControl.on('change:active', this.onHorizontalControlChange_, this);
+      horizontalControl.on('change:active', function(event) {
+        self.onHorizontalControlChange_(event, self);
+      });
       this.addControl(horizontalControl);
     } else if(controlName === 'scope') {
-      var scopeControl = new ol.control.Toggle({
+      let scopeControl = new ol_control_Toggle({
         html: '<i class="fa fa-circle-o"></i>',
         className: 'scope-button',
         name: 'scope',
@@ -84,21 +106,25 @@ ol.control.ComparisonTools = function(options)  {
         active: false
       });
       scopeControl.set('name', controlName+'Toggle');
-      scopeControl.on('change:active', this.onScopeControlChange_, this);
+      scopeControl.on('change:active', function(event) {
+        self.onScopeControlChange_(event, self);
+      });
       this.addControl(scopeControl);
     } else if(controlName === 'clipLayer') {
-      var clipLayerControl = new ol.control.Toggle({
+      let clipLayerControl = new ol_control_Toggle({
         html: '<i class="fa fa-eye"></i>',
         className: 'clipLayer-button',
         title: 'Masquer',
         active: false
       });
       clipLayerControl.set('name', controlName+'Toggle');
-      clipLayerControl.on('change:active', this.onClipLayerControlChange_, this);
+      clipLayerControl.on('change:active', function(event) {
+        self.onClipLayerControlChange_(event, self);
+      });
       this.addControl(clipLayerControl);
     } else if(controlName === 'doubleMap') {
 
-      var doubleMapControl = new ol.control.Toggle({
+      let doubleMapControl = new ol_control_Toggle({
         html: '<i class="fa fa-pause"></i>',
         className: 'doubleMap-button',
         name: 'doubleMap',
@@ -106,54 +132,55 @@ ol.control.ComparisonTools = function(options)  {
         active: false
       });
       doubleMapControl.set('name', controlName+'Toggle');
-      doubleMapControl.on('change:active', this.onDoubleMapControlChange_, this);
+      doubleMapControl.on('change:active', function(event) {
+        self.onDoubleMapControlChange_(event, self);
+      });
       this.addControl(doubleMapControl);
     }
   }
 
 
 };
-ol.inherits(ol.control.ComparisonTools, ol.control.Bar);
+ol_inherits(ol_control_ComparisonTools, ol_control_Bar);
 
-ol.control.ComparisonTools.prototype.setMap = function(map) {
-  ol.control.Bar.prototype.setMap.call(this, map);
+ol_control_ComparisonTools.prototype.setMap = function(map) {
+  ol_control_Bar.prototype.setMap.call(this, map);
 
   if(!this.layerGroup_) {
     this.layerGroup_ = this.getMap().getLayerGroup();
   }
 
-  var doubleMapControl = this.getControl('doubleMapToggle');
+  let doubleMapControl = this.getControl('doubleMapToggle');
   if(doubleMapControl) {
 
     // if doubleMapControl, create cloned map
-    var mapDiv = $(map.getViewport().parentElement);
-    var mapId = mapDiv.attr('id');
+    let mapDiv = map.getViewport().parentElement;
+    let mapId = mapDiv.id;
     if(mapId === undefined) {
       throw new EvalError('ol.Map div must have an id.');
     }
-    var mapDiv2 = $('<div id="' + mapId + '-cloned"></div>');
-    mapDiv2.hide();
+    let mapDiv2 = document.createElement('div');
+    mapDiv2.id=mapId + '-cloned';
+    mapDiv2.hidden = true;
 
-    mapDiv.parent().append(mapDiv2);
+    mapDiv.parentElement.appendChild(mapDiv2);
 
-    this.clonedMap_ = new ol.Map({
-      target: mapDiv2[0],
-      renderer: map.renderer,
-      interactions: ol.interaction.defaults(),
+    map.clonedMap_ = new ol_Map({
+      target: mapDiv2,
       view: map.getView(),
       controls: [
-        new ol.control.Zoom({
+        new ol_control_Zoom({
           zoomInTipLabel: 'Zoom avant',
           zoomOutTipLabel: 'Zoom arrière'
         }),
-        new ol.control.Rotate(),
-        ol.control.GeoportalAttribution !== undefined ? new ol.control.GeoportalAttribution() : new ol.control.Attribution()
+        new ol_control_Rotate(),
+        new ol_control_Attribution()
       ]
     });
 
     // add synchronize interaction between maps
-    map.addInteraction( new ol.interaction.Synchronize({maps: [this.clonedMap_]}));
-    this.clonedMap_.addInteraction( new ol.interaction.Synchronize({maps: [map]}));
+    map.addInteraction( new ol_interaction_Synchronize({maps: [map.clonedMap_]}));
+    map.clonedMap_.addInteraction( new ol_interaction_Synchronize({maps: [map]}));
 
   }
 };
@@ -161,10 +188,10 @@ ol.control.ComparisonTools.prototype.setMap = function(map) {
 /**
  * Get comparison control by its name
  * @param {string} name name of control
- * @return {ol.control.Control|undefined} control control returned
+ * @return {module:ol/control/Control|undefined} control control returned
  */
-ol.control.ComparisonTools.prototype.getControl = function(name) {
-  for(var i=0; i<this.getControls().length; i++) {
+ol_control_ComparisonTools.prototype.getControl = function(name) {
+  for(let i=0; i<this.getControls().length; i++) {
     if(this.getControls()[i].get('name') === name) {
       return this.getControls()[i];
     }
@@ -174,9 +201,9 @@ ol.control.ComparisonTools.prototype.getControl = function(name) {
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) {
+ol_control_ComparisonTools.prototype.onVerticalControlChange_ = function(event) {
   if(event.active) {
-    this.vSwipeControl_ = new ol.control.Swipe({
+    this.vSwipeControl_ = new ol_control_Swipe({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
       orientation: 'vertical'
@@ -192,9 +219,9 @@ ol.control.ComparisonTools.prototype.onVerticalControlChange_ = function(event) 
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event) {
+ol_control_ComparisonTools.prototype.onHorizontalControlChange_ = function(event) {
   if(event.active) {
-    this.hSwipeControl_ = new ol.control.Swipe({
+    this.hSwipeControl_ = new ol_control_Swipe({
       layers: this.getLeftLayer(),
       rightLayers: this.getRightLayer(),
       orientation: 'horizontal'
@@ -210,10 +237,10 @@ ol.control.ComparisonTools.prototype.onHorizontalControlChange_ = function(event
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
-  var scopeToggleControl = this.getControl('scopeToggle');
+ol_control_ComparisonTools.prototype.onScopeControlChange_ = function(event) {
+  let scopeToggleControl = this.getControl('scopeToggle');
   if(event.active) {
-    scopeToggleControl.setInteraction(new ol.interaction.Clip({
+    scopeToggleControl.setInteraction(new ol_interaction_Clip({
       radius: 200
     }));
     // add clip interaction to map
@@ -230,8 +257,8 @@ ol.control.ComparisonTools.prototype.onScopeControlChange_ = function(event) {
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event) {
-  var clipLayerToggleControl = this.getControl('clipLayerToggle');
+ol_control_ComparisonTools.prototype.onClipLayerControlChange_ = function(event) {
+  let clipLayerToggleControl = this.getControl('clipLayerToggle');
   if(event.active) {
     this.getRightLayer().setVisible(false);
     // set icon class to fa-eye-slash
@@ -252,10 +279,9 @@ ol.control.ComparisonTools.prototype.onClipLayerControlChange_ = function(event)
 /**
  * @private
  */
-ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event) {
-  var doubleMapToggleControl = this.getControl('doubleMapToggle');
-  var mapDiv = this.getMap().getViewport().parentElement;
-  var mapDiv2 = this.getClonedMap().getViewport().parentElement;
+ol_control_ComparisonTools.prototype.onDoubleMapControlChange_ = function(event) {
+  let mapDiv = this.getMap().getViewport().parentElement;
+  let mapDiv2 = this.getMap().clonedMap_.getViewport().parentElement;
   if(event.active) {
 
     mapDiv2.style.float =  'left';
@@ -269,7 +295,7 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
     // as we do not want control to add/remove layers on map, we add a cloned layer to cloned map
     // and we hide rightLayer from map
     if(this.useCloneLayer_) {
-      this.clonedLayer_ = new ol.layer.Tile(this.getRightLayer().getProperties());
+      this.clonedLayer_ = new ol_layer_Tile(this.getRightLayer().getProperties());
       this.clonedLayer_.setVisible(true);
       this.getRightLayer().setVisible(false);
 
@@ -316,7 +342,7 @@ ol.control.ComparisonTools.prototype.onDoubleMapControlChange_ = function(event)
  * Set displayMode
  * @param {string} display mode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
-ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
+ol_control_ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
   if(this.getMap()) {
 
@@ -341,9 +367,8 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
  * Get active control
  * @return {string} displayMode ['hSlider', 'vSlider', 'scope', 'clipLayer', 'doubleMap']
  */
- ol.control.ComparisonTools.prototype.getDisplayMode = function() {
-  var i;
-  for(i=0; i<this.getControls().length; i++) {
+ ol_control_ComparisonTools.prototype.getDisplayMode = function() {
+  for(let i=0; i<this.getControls().length; i++) {
     if(this.getControls()[i].getActive()) {
       return this.getControls()[i].get('name').substring(0, this.getControls()[i].get('name').length - 6);
     }
@@ -354,9 +379,9 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
 /**
  * Set right layer for comparison
- * @param {ol.layer} layer
+ * @param {module:ol/layer} layer
  */
- ol.control.ComparisonTools.prototype.setRightLayer = function(layer) {
+ ol_control_ComparisonTools.prototype.setRightLayer = function(layer) {
 
    if(!this.getMap()) {
      throw new EvalError('control must be added to map before setting rightLayer.');
@@ -364,7 +389,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
 
   if(this.getDisplayMode() === 'vSlider') {
-    var vSwipeControl;
+    let vSwipeControl;
     this.getMap().getControls().forEach(function(control) {
       if(control.get('name') === 'vSlider') {
         vSwipeControl = control;
@@ -373,7 +398,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
     vSwipeControl.removeLayer(this.getRightLayer());
     vSwipeControl.addLayer(layer, true);
   } else if(this.getDisplayMode() === 'hSlider') {
-    var hSwipeControl;
+    let hSwipeControl;
     this.getMap().getControls().forEach(function(control) {
       if(control.get('name') === 'hSlider') {
         hSwipeControl = control;
@@ -384,7 +409,7 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
   } else if(this.getDisplayMode() === 'clipLayer') {
     layer.setVisible(this.getRightLayer().getVisible());
   } else if(this.getDisplayMode() === 'scope') {
-    var interaction = this.getControl('scopeToggle').getInteraction();
+    let interaction = this.getControl('scopeToggle').getInteraction();
     interaction.removeLayer(this.getRightLayer());
     interaction.addLayer(layer);
   } else if(this.getDisplayMode() === 'doubleMap') {
@@ -400,11 +425,12 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
       this.getRightLayer().setVisible(true);
       this.layerGroup_.getLayers().remove(layer);
       // update layer in collection
-      this.getClonedMap().getLayers().forEach(function(el, index, array) {
-        if(el === this.getRightLayer()) {
-          this.getClonedMap().getLayers().setAt(index, layer);
+      let self = this;
+      this.getClonedMap().getLayers().forEach(function(el, index) {
+        if(el === self.getRightLayer()) {
+          self.getClonedMap().getLayers().setAt(index, layer);
         }
-      }, this);
+      });
     }
   }
 
@@ -412,94 +438,123 @@ ol.control.ComparisonTools.prototype.setDisplayMode = function(displayMode) {
 
 };
 
-ol.control.ComparisonTools.prototype.updateClonedLayer_ = function(event) {
+ol_control_ComparisonTools.prototype.updateClonedLayer_ = function() {
   this.clonedLayer_.setProperties(this.getRightLayer().getProperties());
   this.clonedLayer_.setVisible(true);
 }
 
 /**
  * Set left layer for comparison
- * @param {ol.layer} layer
+ * @param {module:ol/layer} layer
  */
-ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
+ol_control_ComparisonTools.prototype.setLeftLayer = function(layer) {
 
   if(!this.getMap()) {
     throw new EvalError('control must be added to map before setting leftLayer.');
   }
 
+
+  if(this.getDisplayMode() === 'vSlider') {
+    let vSwipeControl;
+    this.getMap().getControls().forEach(function(control) {
+      if(control.get('name') === 'vSlider') {
+        vSwipeControl = control;
+      }
+    });
+    if(vSwipeControl) {
+      vSwipeControl.addLayer(this.getLeftLayer());
+    }
+  } else if(this.getDisplayMode() === 'hSlider') {
+    let hSwipeControl;
+    this.getMap().getControls().forEach(function(control) {
+      if(control.get('name') === 'hSlider') {
+        hSwipeControl = control;
+      }
+    });
+    if(hSwipeControl) {
+      hSwipeControl.addLayer(this.getLeftLayer());
+    }
+  } else if(this.getDisplayMode() === 'clipLayer') {
+    layer.setVisible(this.getLeftLayer().getVisible());
+  } else if(this.getDisplayMode() === 'scope') {
+    let interaction = this.getControl('scopeToggle').getInteraction();
+    interaction.removeLayer(this.getLeftLayer());
+    interaction.addLayer(layer);
+  } else if(this.getDisplayMode() === 'doubleMap') {
+    // update layer in collection
+    let self = this;
+    this.getMap().getLayers().forEach(function(el, index) {
+      if(el === self.getLeftLayer()) {
+        self.getMap().getLayers().setAt(index, layer);
+      }
+    });
+  }
+
   this.leftLayer_ = layer;
-  var vSwipeControl;
-  this.getMap().getControls().forEach(function(control) {
-    if(control.get('name') === 'vSlider') {
-      vSwipeControl = control;
-    }
-  });
-  if(vSwipeControl) {
-    vSwipeControl.addLayer(this.getLeftLayer());
-  }
-  var hSwipeControl;
-  this.getMap().getControls().forEach(function(control) {
-    if(control.get('name') === 'hSlider') {
-      hSwipeControl = control;
-    }
-  });
-  if(hSwipeControl) {
-    hSwipeControl.addLayer(this.getLeftLayer());
-  }
  };
 
 /**
  * Get right layer
- * @return {ol.layer} layer
+ * @return {module:ol/layer} layer
  */
-ol.control.ComparisonTools.prototype.getRightLayer = function() {
+ol_control_ComparisonTools.prototype.getRightLayer = function() {
   return this.rightLayer_;
 };
 
 /**
  * Get left layer
- * @return {ol.layer} layer
+ * @return {module:ol/layer} layer
  */
-ol.control.ComparisonTools.prototype.getLeftLayer = function() {
+ol_control_ComparisonTools.prototype.getLeftLayer = function() {
   return this.leftLayer_;
 };
 
 /**
  * Get cloned map
- * @return {ol.map} cloned map
+ * @return {module:ol/map} cloned map
  */
-ol.control.ComparisonTools.prototype.getClonedMap = function() {
-  return this.clonedMap_;
+ol_control_ComparisonTools.prototype.getClonedMap = function() {
+  return this.getMap().clonedMap_;
 }
 
 /**
  * Set layer group
- * @param {ol.layer.Group} layer group where layers are added/removed
+ * @param {module:ol/layer/Group} layer group where layers are added/removed
  */
-ol.control.ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
+ol_control_ComparisonTools.prototype.setLayerGroup = function(layerGroup) {
   this.layerGroup_ = layerGroup;
 }
 
 /**
  * Get layer group
- * @return {ol.layer.Group} layer group where layers are added/removed
+ * @return {module:ol/layer/Group} layer group where layers are added/removed
  */
-ol.control.ComparisonTools.prototype.getLayerGroup = function() {
+ol_control_ComparisonTools.prototype.getLayerGroup = function() {
   return this.layerGroup_;
 }
 
 /**
  * Get vertical swipe control group
- * @return {ol.control.Swipe} vertical swipe control
+ * @return {module:ol-ext/control/Swipe} vertical swipe control
  */
-ol.control.ComparisonTools.prototype.getVSwipeControl = function() {
+ol_control_ComparisonTools.prototype.getVSwipeControl = function() {
   return this.vSwipeControl_;
 }
 
 /**
  * Get horizontal swipe control group
- * @return {ol.control.Swipe} horizontal swipe control
+ * @return {module:ol-ext/control/Swipe} horizontal swipe control
  */
-ol.control.ComparisonTools.prototype.getHSwipeControl = function() {
+ol_control_ComparisonTools.prototype.getHSwipeControl = function() {
   return this.hSwipeControl_;
 }
+
+/**
+ * Get cloned map
+ * @return {module:ol/map} cloned map
+ */
+ol_Map.prototype.getClonedMap = function() {
+  return this.clonedMap_;
+}
+
+export default ol_control_ComparisonTools;

@@ -9,7 +9,7 @@ describe('ol.control.ComparisonTools', function() {
     it('throws error when no id is set to map div.', function() {
       mapDiv = document.createElement('div');
       document.body.appendChild(mapDiv);
-      var comparisonTools = new ol.control.ComparisonTools();
+      comparisonTools = new ol.control.ComparisonTools();
       map = new ol.Map({
         target: mapDiv
       });
