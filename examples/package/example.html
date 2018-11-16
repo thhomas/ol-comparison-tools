@@ -9,7 +9,23 @@
     <link rel="stylesheet" href="dist/example.css">
   </head>
   <body>
-    <div id="map" tabindex="0"></div>
+    <div>
+      <div id="map" tabindex="0"></div>
+    </div>
+    <div>
+      Change left layer:
+      <select id="leftLayerSelect" onchange="window.changeLeftLayer()">
+        <option value="osm">osm</option>
+        <option value="mapbox" selected>mapbox</option>
+      </select>
+    </div>
+    <div>
+      Change right layer:
+      <select id="rightLayerSelect" onchange="window.changeRightLayer()">
+        <option value="mapbox">mapbox</option>
+        <option value="osm" selected>osm</option>
+      </select>
+    </div>
     <script src="../../node_modules/jquery/dist/jquery.js"></script>
     <!-- <script src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
     <script src="../dist/comparisontools.min.js"></script>

@@ -425,11 +425,12 @@ ol_control_ComparisonTools.prototype.setDisplayMode = function(displayMode) {
       this.getRightLayer().setVisible(true);
       this.layerGroup_.getLayers().remove(layer);
       // update layer in collection
+      let self = this;
       this.getClonedMap().getLayers().forEach(function(el, index) {
-        if(el === this.getRightLayer()) {
-          this.getClonedMap().getLayers().setAt(index, layer);
+        if(el === self.getRightLayer()) {
+          self.getClonedMap().getLayers().setAt(index, layer);
         }
-      }, this);
+      });
     }
   }
 
@@ -452,25 +453,44 @@ ol_control_ComparisonTools.prototype.setLeftLayer = function(layer) {
     throw new EvalError('control must be added to map before setting leftLayer.');
   }
 
+
+  if(this.getDisplayMode() === 'vSlider') {
+    let vSwipeControl;
+    this.getMap().getControls().forEach(function(control) {
+      if(control.get('name') === 'vSlider') {
+        vSwipeControl = control;
+      }
+    });
+    if(vSwipeControl) {
+      vSwipeControl.addLayer(this.getLeftLayer());
+    }
+  } else if(this.getDisplayMode() === 'hSlider') {
+    let hSwipeControl;
+    this.getMap().getControls().forEach(function(control) {
+      if(control.get('name') === 'hSlider') {
+        hSwipeControl = control;
+      }
+    });
+    if(hSwipeControl) {
+      hSwipeControl.addLayer(this.getLeftLayer());
+    }
+  } else if(this.getDisplayMode() === 'clipLayer') {
+    layer.setVisible(this.getLeftLayer().getVisible());
+  } else if(this.getDisplayMode() === 'scope') {
+    let interaction = this.getControl('scopeToggle').getInteraction();
+    interaction.removeLayer(this.getLeftLayer());
+    interaction.addLayer(layer);
+  } else if(this.getDisplayMode() === 'doubleMap') {
+    // update layer in collection
+    let self = this;
+    this.getMap().getLayers().forEach(function(el, index) {
+      if(el === self.getLeftLayer()) {
+        self.getMap().getLayers().setAt(index, layer);
+      }
+    });
+  }
+
   this.leftLayer_ = layer;
-  let vSwipeControl;
-  this.getMap().getControls().forEach(function(control) {
-    if(control.get('name') === 'vSlider') {
-      vSwipeControl = control;
-    }
-  });
-  if(vSwipeControl) {
-    vSwipeControl.addLayer(this.getLeftLayer());
-  }
-  let hSwipeControl;
-  this.getMap().getControls().forEach(function(control) {
-    if(control.get('name') === 'hSlider') {
-      hSwipeControl = control;
-    }
-  });
-  if(hSwipeControl) {
-    hSwipeControl.addLayer(this.getLeftLayer());
-  }
  };
 
 /**

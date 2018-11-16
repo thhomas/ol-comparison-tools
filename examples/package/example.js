@@ -39,3 +39,41 @@ olMap.addControl(ccontrol);
 olMap.addControl(hcontrol);
 ccontrol.setDisplayMode('doubleMap');
 
+
+
+window.changeLeftLayer = function() {
+  var selectedLayer = document.getElementById("leftLayerSelect").value;
+  var newLayer;
+  if(selectedLayer == "osm") {
+    newLayer = new TileLayer({
+      source: new OSMSource()
+    });
+  } else if(selectedLayer == "mapbox") {
+    newLayer = new TileLayer({
+      source: new TileJSONSource({
+        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+        crossOrigin: 'anonymous'
+      })
+    });
+  }
+  ccontrol.setLeftLayer(newLayer);
+}
+
+
+window.changeRightLayer = function() {
+  var selectedLayer = document.getElementById("rightLayerSelect").value;
+  var newLayer;
+  if(selectedLayer == "osm") {
+    newLayer = new TileLayer({
+      source: new OSMSource()
+    });
+  } else if(selectedLayer == "mapbox") {
+    newLayer = new TileLayer({
+      source: new TileJSONSource({
+        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+        crossOrigin: 'anonymous'
+      })
+    });
+  }
+  ccontrol.setRightLayer(newLayer);
+}

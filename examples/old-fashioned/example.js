@@ -29,4 +29,42 @@
   olMap.addControl(control);
   control.setDisplayMode('doubleMap');
 
+  win.changeLeftLayer = function() {
+    var selectedLayer = document.getElementById("leftLayerSelect").value;
+    var newLayer;
+    if(selectedLayer == "osm") {
+      newLayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+      });
+    } else if(selectedLayer == "mapbox") {
+      newLayer = new ol.layer.Tile({
+        source: new ol.source.TileJSON({
+          url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+          crossOrigin: 'anonymous'
+        })
+      });
+    }
+    control.setLeftLayer(newLayer);
+  }
+
+
+  win.changeRightLayer = function() {
+    var selectedLayer = document.getElementById("rightLayerSelect").value;
+    var newLayer;
+    if(selectedLayer == "osm") {
+      newLayer = new ol.layer.Tile({
+        source: new ol.source.OSM()
+      });
+    } else if(selectedLayer == "mapbox") {
+      newLayer = new ol.layer.Tile({
+        source: new ol.source.TileJSON({
+          url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+          crossOrigin: 'anonymous'
+        })
+      });
+    }
+    control.setRightLayer(newLayer);
+  }
+
+
 })(window, document);

@@ -5,11 +5,12 @@
 
 html, body, #map{
   width:100%;
-  height:80%;
+  height: 550px;
   overflow:hidden;
 }
 
 #map{
+  height: 500px;
   z-index:1;
   top:0; bottom:0;
 }
