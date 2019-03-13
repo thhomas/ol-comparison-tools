@@ -408,9 +408,7 @@ ol.control.ComparisonTools.prototype.setLeftLayer = function(layer) {
   } else if(this.getDisplayMode() === 'clipLayer') {
     layer.setVisible(this.getLeftLayer().getVisible());
   } else if(this.getDisplayMode() === 'scope') {
-    let interaction = this.getControl('scopeToggle').getInteraction();
-    interaction.removeLayer(this.getLeftLayer());
-    interaction.addLayer(layer);
+    // do nothing
   } else if(this.getDisplayMode() === 'doubleMap') {
     // update layer in collection
     let self = this;

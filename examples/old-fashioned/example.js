@@ -44,6 +44,7 @@
         })
       });
     }
+    olMap.getLayers().setAt(0, newLayer);
     control.setLeftLayer(newLayer);
   }
 
@@ -63,6 +64,7 @@
         })
       });
     }
+    olMap.getLayers().setAt(1, newLayer);
     control.setRightLayer(newLayer);
   }
 

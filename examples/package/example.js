@@ -56,6 +56,7 @@ window.changeLeftLayer = function() {
       })
     });
   }
+  olMap.getLayers().setAt(0, newLayer);
   ccontrol.setLeftLayer(newLayer);
 }
 
@@ -75,5 +76,6 @@ window.changeRightLayer = function() {
       })
     });
   }
+  olMap.getLayers().setAt(1, newLayer);
   ccontrol.setRightLayer(newLayer);
 }
