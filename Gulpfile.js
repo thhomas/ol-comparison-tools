@@ -1,14 +1,13 @@
 'use strict';
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     del = require('del'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat-util'),
     through = require('through2'),
-    babel = require('gulp-babel'),
     uglifyes = require('uglify-es'),
     composer = require('gulp-uglify/composer'),
     webpack = require('webpack-stream'),
-    cssmin = require('gulp-cssmin'),
+    cleanCSS = require('gulp-clean-css');
     sass = require('gulp-sass');
 
 function transform() {
@@ -64,14 +63,6 @@ gulp.task ("postpublish", function(){
     .pipe(clean());
 });
 
-gulp.task('tests', function() {
-	return gulp.src('test/**/*.js')
-		.pipe(babel({
-			plugins: ["transform-es2015-modules-amd"],
-      presets: ["es2015"]
-		}))
-		.pipe(gulp.dest('test/dist'));
-});
 
 gulp.task('clean-js', function() {
   return del(['./dist/js/**/*.js']);
@@ -99,16 +90,16 @@ gulp.task('build-js', ['clean-js'], function() {
 // Build css. Use --debug to build in debug mode
 gulp.task('build-css', function () {
   gulp.src([
-		"./src/control/*.css"
-	])
+    "./src/control/*.css"
+  ])
   .pipe(concat('comparisontools.css'))
   .pipe(gulp.dest('./dist'));
 
   gulp.src([
-		"./src/control/*.css"
-	])
+    "./src/control/*.css"
+  ])
   .pipe(concat('comparisontools.min.css'))
-  .pipe(cssmin())
+  .pipe(cleanCSS())
   .pipe(gulp.dest('./dist'));
 });
 
