@@ -9,8 +9,7 @@
   },
   "scripts": {
     "serve": "http-server",
-    "test": "karma start karma.conf.js",
-    "lint": "eslint ./**/*.js --ext .js control test --cache --verbose",
+    "lint": "eslint ./**/*.js --ext .js --cache",
     "build-dist": "gulp dist",
     "build-examples": "gulp build-examples",
     "prepack": "gulp prepublish",
@@ -38,20 +37,27 @@
     "ol-ext": "^3.0.0"
   },
   "devDependencies": {
+    "del": "^6.0.0",
     "eslint": "^5.10.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.3.0",
     "gulp-cli": "^2.2.0",
     "gulp-concat": "^2.6.1",
-    "gulp-clean-css": "^4.3.0",
     "gulp-header": "^2.0.5",
-    "gulp-minify": "^3.1.0",
-    "gulp-watch": "^5.0.1",
     "gulp-jsdoc3": "^2.0.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-watch": "^5.0.1",
     "live-server": "^1.2.0",
     "minimist": "^1.2.0",
+    "node-sass": "^4.14.1",
     "plugin-error": "^1.0.1",
-    "through2": "^2.0.3"
+    "through2": "^2.0.3",
+    "uglify-es": "^3.3.9",
+    "webpack-stream": "^6.1.0"
   }
 }

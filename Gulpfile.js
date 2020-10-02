@@ -2,12 +2,13 @@
 const gulp = require('gulp'),
     del = require('del'),
     rename = require('gulp-rename'),
-    concat = require('gulp-concat-util'),
+    concat = require('gulp-concat'),
     through = require('through2'),
-    uglifyes = require('uglify-es'),
-    composer = require('gulp-uglify/composer'),
+    // uglifyes = require('uglify-es'),
+    // composer = require('gulp-uglify/composer'),
+    minify = require('gulp-minify'),
     webpack = require('webpack-stream'),
-    cleanCSS = require('gulp-clean-css');
+    cleanCSS = require('gulp-clean-css'),
     sass = require('gulp-sass');
 
 function transform() {
@@ -38,7 +39,7 @@ function transform() {
         // remove empty lines
         content = content.replace(/^\s*[\r\n]/gm, '');
         // return content
-        file.contents = new Buffer(content);
+        file.contents = Buffer.from(content);
       }
       return callback(null, file);
     }
@@ -68,17 +69,22 @@ gulp.task('clean-js', function() {
   return del(['./dist/js/**/*.js']);
 });
 
-gulp.task('build-js', ['clean-js'], function() {
-  var minify = composer(uglifyes, console)
-  gulp.src(['./src/control/**/*.js'])
+gulp.task('build-js', function() {
+  // var minify = composer(uglifyes, console)
+  return gulp.src(['./src/control/**/*.js'])
     .pipe(transform())
     .pipe(concat('comparisontools.js'))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(rename({extname: '.min.js'}))
+    // .pipe(rename({extname: '.min.js'}))
+    // .pipe(minify({
+    //         output: {
+    //           preamble: '/**\n* Author: Thomas Tilak\n* github: https://github.com/thhomas/ol-comparison-tools\n* licence: MIT\n*/\n'
+    //         }
+    // }))
     .pipe(minify({
-            output: {
-              preamble: '/**\n* Author: Thomas Tilak\n* github: https://github.com/thhomas/ol-comparison-tools\n* licence: MIT\n*/\n'
-            }
+      ext: {
+        src: ".js",
+        min: ".min.js"
+      }
     }))
     .on('error', function(error) {
       console.log(error.toString());
@@ -89,13 +95,16 @@ gulp.task('build-js', ['clean-js'], function() {
 
 // Build css. Use --debug to build in debug mode
 gulp.task('build-css', function () {
-  gulp.src([
+  return gulp.src([
     "./src/control/*.css"
   ])
   .pipe(concat('comparisontools.css'))
   .pipe(gulp.dest('./dist'));
 
-  gulp.src([
+});
+
+gulp.task('build-css-min', function() {
+  return  gulp.src([
     "./src/control/*.css"
   ])
   .pipe(concat('comparisontools.min.css'))
@@ -117,4 +126,4 @@ gulp.task('build-examples', function() {
     .pipe(gulp.dest('examples/package/dist'));
 });
 
-gulp.task('dist', ['build-js', 'build-css']);
+gulp.task('dist', gulp.series('clean-js', 'build-js', 'build-css', 'build-css-min'));
