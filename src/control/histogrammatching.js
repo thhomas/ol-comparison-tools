@@ -4,7 +4,7 @@
  * cf. https://en.wikipedia.org/wiki/Histogram_matching
  */
 
-import {inherits as ol_inherits} from 'ol';
+import ol_inherits from '../util';
 import {Control as ol_control_Control} from 'ol/control.js';
 import {Raster as ol_source_Raster} from 'ol/source.js';
 import {Image as ol_layer_Image} from 'ol/layer.js';
@@ -52,8 +52,6 @@ ol_control_HistogramMatching.prototype.setMap = function(map) {
 ol_control_HistogramMatching.prototype.onToggle_ = function(toggle) {
 
   let me = this;
-
-  $(me.element).find('button').blur();
 
   if(me.getActive() === true) {
 

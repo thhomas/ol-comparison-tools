@@ -2,7 +2,7 @@
  * @module ol/control/comparisontools
  */
 
-import {inherits as ol_inherits} from 'ol';
+import ol_inherits from '../util';
 import {Zoom as ol_control_Zoom, Rotate as ol_control_Rotate, Attribution as ol_control_Attribution} from 'ol/control.js';
 import {Map as ol_Map} from 'ol';
 import {defaults as ol_defaultInteractions} from 'ol/interaction.js';
