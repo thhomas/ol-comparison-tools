@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css"> -->
-    <!-- <link rel="stylesheet" href="https://openlayers.org/en/v5.1.3/css/ol.css"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="dist/example.css">
   </head>
@@ -16,20 +14,16 @@
       Change left layer:
       <select id="leftLayerSelect" onchange="window.changeLeftLayer()">
         <option value="osm">osm</option>
-        <option value="mapbox" selected>mapbox</option>
+        <option value="arcgis" selected>arcgis</option>
       </select>
     </div>
     <div>
       Change right layer:
       <select id="rightLayerSelect" onchange="window.changeRightLayer()">
-        <option value="mapbox">mapbox</option>
+        <option value="arcgis">arcgis</option>
         <option value="osm" selected>osm</option>
       </select>
     </div>
-    <script src="../../node_modules/jquery/dist/jquery.js"></script>
-    <!-- <script src="https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js"></script>
-    <script src="../dist/comparisontools.min.js"></script>
-    <script src="example.js"></script> -->
     <script src="./dist/bundle.js"></script>
   </body>
 </html>

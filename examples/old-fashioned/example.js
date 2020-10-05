@@ -2,8 +2,8 @@
   'use strict';
 
   var layer1 = new ol.layer.Tile({
-    source: new ol.source.TileJSON({
-      url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+    source: new ol.source.TileArcGISRest({
+      url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
       crossOrigin: 'anonymous'
     })
   });
@@ -36,10 +36,10 @@
       newLayer = new ol.layer.Tile({
         source: new ol.source.OSM()
       });
-    } else if(selectedLayer == "mapbox") {
-      newLayer = new ol.layer.Tile({
-        source: new ol.source.TileJSON({
-          url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+    } else if(selectedLayer == "arcgis") {
+      newLayer =  new ol.layer.Tile({
+        source: new ol.source.TileArcGISRest({
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
           crossOrigin: 'anonymous'
         })
       });
@@ -56,10 +56,10 @@
       newLayer = new ol.layer.Tile({
         source: new ol.source.OSM()
       });
-    } else if(selectedLayer == "mapbox") {
-      newLayer = new ol.layer.Tile({
-        source: new ol.source.TileJSON({
-          url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+    } else if(selectedLayer == "arcgis") {
+      newLayer =  new ol.layer.Tile({
+        source: new ol.source.TileArcGISRest({
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
           crossOrigin: 'anonymous'
         })
       });

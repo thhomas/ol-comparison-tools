@@ -1,13 +1,13 @@
 import {Map, View} from 'ol';
 import TileLayer from 'ol/layer/Tile';
-import {TileJSON as TileJSONSource, OSM as OSMSource} from 'ol/source.js';
+import {TileJSON as TileJSONSource, OSM as OSMSource, TileArcGISRest as TileArcGISRestSource} from 'ol/source.js';
 
-import {ComparisonTools as ComparisonToolsControl} from '../../src/control.js'
-import {HistogramMatching as HistogramMatchingControl} from '../../src/control.js'
+import {ComparisonTools as ComparisonToolsControl} from '../../src/control.js';
+import {HistogramMatching as HistogramMatchingControl} from '../../src/control.js';
 
 var layer1 = new TileLayer({
-  source: new TileJSONSource({
-    url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+  source: new TileArcGISRestSource({
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
     crossOrigin: 'anonymous'
   })
 });
@@ -48,10 +48,10 @@ window.changeLeftLayer = function() {
     newLayer = new TileLayer({
       source: new OSMSource()
     });
-  } else if(selectedLayer == "mapbox") {
+  } else if(selectedLayer == "arcgis") {
     newLayer = new TileLayer({
-      source: new TileJSONSource({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+      source: new TileArcGISRestSource({
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
         crossOrigin: 'anonymous'
       })
     });
@@ -68,10 +68,10 @@ window.changeRightLayer = function() {
     newLayer = new TileLayer({
       source: new OSMSource()
     });
-  } else if(selectedLayer == "mapbox") {
+  } else if(selectedLayer == "arcgis") {
     newLayer = new TileLayer({
-      source: new TileJSONSource({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+      source: new TileArcGISRestSource({
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
         crossOrigin: 'anonymous'
       })
     });

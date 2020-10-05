@@ -55,7 +55,6 @@ Examples
 To browse examples, 
 
 * install dependencies with `npm install`
-* build them with `npm run build-examples`
 * start a web server with `npm run serve` and browse to http://localhost:8080/examples/package/example.html
 
 If you want to hack/modify the plugin, you can rebuild dist version doing `npm run build-dist`.

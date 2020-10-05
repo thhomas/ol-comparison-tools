@@ -1,6 +1,6 @@
 {
   "name": "ol-comparison-tools",
-  "version": "v1.1.2",
+  "version": "v1.2.0",
   "description": "An Openlayers extension adding a control to handle comparison tools between 2 layers.",
   "main": "control.js",
   "directories": {
@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "serve": "http-server",
+    "serve": "gulp build-examples && gulp http-server",
     "lint": "eslint ./**/*.js --ext .js --cache",
     "build-dist": "gulp dist",
     "build-examples": "gulp build-examples",
@@ -32,7 +32,6 @@
   },
   "homepage": "https://github.com/thhomas/ol-comparison-tools#readme",
   "peerDependencies": {
-    "jquery": "^3.3.1",
     "ol": "^6.0.0",
     "ol-ext": "^3.0.0"
   },
@@ -45,6 +44,7 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-cli": "^2.2.0",
     "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
     "gulp-header": "^2.0.5",
     "gulp-jsdoc3": "^2.0.0",
     "gulp-minify": "^3.1.0",

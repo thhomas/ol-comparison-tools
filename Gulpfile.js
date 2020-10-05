@@ -9,6 +9,7 @@ const gulp = require('gulp'),
     minify = require('gulp-minify'),
     webpack = require('webpack-stream'),
     cleanCSS = require('gulp-clean-css'),
+    connect = require('gulp-connect'),
     sass = require('gulp-sass');
 
 function transform() {
@@ -51,7 +52,7 @@ function transform() {
  * for packaging
  */
 gulp.task ("prepublish", function(){
-  gulp.src(["./src/*/*.*", "./src/*.js"], { base: './src' })
+  return gulp.src(["./src/*/*.*", "./src/*.js"], { base: './src' })
     .pipe(gulp.dest('./'));
 });
 
@@ -60,7 +61,7 @@ gulp.task ("prepublish", function(){
  */
 gulp.task ("postpublish", function(){
   var clean = require('gulp-clean');
-  gulp.src(["./control", "./control.js"])
+  return gulp.src(["./control", "./control.js", "./util.js"])
     .pipe(clean());
 });
 
@@ -112,8 +113,8 @@ gulp.task('build-css-min', function() {
   .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build-examples', function() {
-  gulp.src('examples/package/example.js')
+gulp.task('build-examples-js', function() {
+  return gulp.src('examples/package/example.js')
     .pipe(webpack({
       output: {
         filename: 'bundle.js'
@@ -121,9 +122,21 @@ gulp.task('build-examples', function() {
     }))
     .pipe(gulp.dest('examples/package/dist'));
 
-  gulp.src('examples/package/example.scss')
+});
+
+gulp.task('build-examples-css', function() {
+  return gulp.src('examples/package/example.scss')
     .pipe(sass())
     .pipe(gulp.dest('examples/package/dist'));
 });
+
+gulp.task('http-server', function() {
+  connect.server({
+    root: '.',
+    livereload: true
+  });
+});
+
+gulp.task('build-examples', gulp.series('build-examples-js', 'build-examples-css'));
 
 gulp.task('dist', gulp.series('clean-js', 'build-js', 'build-css', 'build-css-min'));
